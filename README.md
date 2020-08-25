@@ -1,1 +1,1 @@
-# openchs-product
+# avni-product

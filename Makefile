@@ -23,3 +23,6 @@ delete_label:
 	$(call label,avni-models)
 	$(call label,rules-server)
 	$(call label,avni-canned-reports)
+
+branch-merge-test:
+	npx ts-node src/index.ts

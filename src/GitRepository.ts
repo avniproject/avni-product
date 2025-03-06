@@ -1,6 +1,7 @@
 import simpleGit, {BranchSummary} from "simple-git";
 import {AvniCodebase, Project} from "./AvniCodebase";
 import _ from "lodash";
+import {originBranch} from "./util";
 
 export class GitRepository {
     static async branchExists(branch: string, project: Project) {
@@ -25,5 +26,17 @@ export class GitRepository {
             return await this.getClosestAncestorBranch(ancestorBranch, project);
         }
         throw new Error(`No ancestor branch found for ${branch} and project ${project.name}`);
+    }
+
+    static async isBranchMerged(currentBranch: string, targetBranch: string, project: Project) {
+        try {
+            const git = simpleGit(`../${project.name}`);
+            const mergeBase = await git.raw(['merge-base', originBranch(currentBranch), originBranch(targetBranch)]);
+            const targetBranchCommit = await git.raw(['rev-parse', originBranch(targetBranch)]);
+            return mergeBase.trim() === targetBranchCommit.trim();
+        } catch (error) {
+            console.error('Error checking branch merge status:', error);
+            return false;
+        }
     }
 }

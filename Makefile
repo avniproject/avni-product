@@ -24,6 +24,9 @@ delete_label:
 	$(call label,rules-server)
 	$(call label,avni-canned-reports)
 
+deps:
+	npm install
+
 branch-merge-test:
 	npx ts-node src/index.ts areAllBranchesMerged
 

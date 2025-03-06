@@ -2,8 +2,6 @@ import {AvniCodebase, Project} from "./AvniCodebase";
 import _ from "lodash";
 import {GitRepository} from "./GitRepository";
 
-const simpleGit = require("simple-git");
-
 async function allBranchesExist() {
     const projects = AvniCodebase.getProjects();
     const releases = AvniCodebase.getReleases();
@@ -39,9 +37,9 @@ async function areAllBranchesMerged() {
                 if (ancestorBranch) {
                     const isMerged = await GitRepository.isBranchMerged(branch, ancestorBranch, project);
                     if (isMerged) {
-                        console.info('[SUCCESS] Branch merged:', project.name, branch, ancestorBranch);
+                        console.info('[SUCCESS] Branch is already merged:', project.name, branch, ancestorBranch);
                     } else {
-                        console.error('[ERROR] Branch not merged:', project.name, branch, ancestorBranch);
+                        console.error('[ERROR] Branch is not merged:', project.name, branch, ancestorBranch);
                     }
                 }
             }

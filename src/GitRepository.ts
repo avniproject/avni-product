@@ -7,7 +7,7 @@ export class GitRepository {
     static async branchExists(branch: string, project: Project) {
         const branches = await this.getRemoteBranches(project);
         return _.some(branches, (b: string) => {
-            return `origin/${branch}` === b;
+            return originBranch(branch) === b;
         });
     }
 
@@ -16,6 +16,12 @@ export class GitRepository {
         await git.fetch();
         const branches: BranchSummary = await git.branch(['-r']);
         return branches.all;
+    }
+
+    static async getLocalBranches(project: Project): Promise<string[]> {
+        const git = simpleGit(`../${project.name}`);
+        const branchSummary = await git.branchLocal();
+        return branchSummary.all;
     }
 
     static async getClosestAncestorBranch(branch: string, project: Project): Promise<string> {
@@ -38,5 +44,22 @@ export class GitRepository {
             console.error('Error checking branch merge status:', error);
             return false;
         }
+    }
+
+    static async createLocalBranch(branch: string, project: Project) {
+        const git = simpleGit(`../${project.name}`);
+        await git.checkout(['-b', branch, originBranch(branch)]);
+    }
+
+    static async hasLocalChanges(project: Project) {
+        const git = simpleGit(`../${project.name}`);
+        const status = await git.status();
+        if (status.modified.length > 0 || status.not_added.length > 0) {
+            return true;
+        }
+
+        // unstaged changes
+        const diff = await git.diff();
+        return !!diff;
     }
 }

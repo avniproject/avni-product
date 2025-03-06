@@ -25,4 +25,13 @@ delete_label:
 	$(call label,avni-canned-reports)
 
 branch-merge-test:
-	npx ts-node src/index.ts
+	npx ts-node src/index.ts areAllBranchesMerged
+
+all-branches-exist:
+	npx ts-node src/index.ts allBranchesExist
+
+create-local-branches:
+	npx ts-node src/index.ts createLocalBranches
+
+has-local-changes:
+	npx ts-node src/index.ts hasLocalChanges

@@ -75,6 +75,19 @@ async function hasLocalChanges() {
     }
 }
 
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+async function askUser(release: string, ancestorBranch: string) {
+    return new Promise(resolve => {
+        readline.question(`Do you want to create Remote Branch ${release} from parent branch "${ancestorBranch}" in origin? (yes/no): `, (response: string) => {
+            resolve(response.toLowerCase() === 'yes');
+        });
+    });
+}
+
 async function createRemoteBranches() {
     const projects = AvniCodebase.getProjects();
     const releases = AvniCodebase.getReleases();
@@ -86,12 +99,17 @@ async function createRemoteBranches() {
                 return `origin/${release}` === branch;
             });
             if (!exists) {
-                console.log(`Creating branch ${release} in project  ${project.name}` );
                 try {
-                    // Fetch the latest changes from the remote
-                    const ancestorBranch = AvniCodebase.getAncestorBranch(release, project)
-                    await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
-                    console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                    const ancestorBranch = AvniCodebase.getAncestorBranch(release, project);
+                    console.log(`Remote Branch ${release} does not exist in ${project.name}.`);
+                    const response = await askUser(release, ancestorBranch);
+                    if (response) {
+                        console.log(`Creating branch ${release} in project  ${project.name}`);
+
+                        // Fetch the latest changes from the remote
+                        await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
+                        console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                    }
                 } catch (error) {
                     console.error('Error creating or pushing branch:', error);
                 }

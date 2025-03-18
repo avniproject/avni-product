@@ -6,6 +6,9 @@ Four makefile targets are available. Typically one may use them in this order.
 ### all-branches-exist
 Check if all branches exist in the origin.
 
+### create-remote-branches
+Create remote branches if it does not exist in the origin.
+
 ### has-local-changes
 Check if you have any local changes. This is required if you want to create local branches, or otherwise.
 

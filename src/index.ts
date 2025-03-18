@@ -75,6 +75,33 @@ async function hasLocalChanges() {
     }
 }
 
+async function createRemoteBranches() {
+    const projects = AvniCodebase.getProjects();
+    const releases = AvniCodebase.getReleases();
+    for (const project of projects) {
+        const branches = await GitRepository.getRemoteBranches(project)
+
+        for (const release of releases) {
+            const exists = _.some(branches, (branch: string) => {
+                return `origin/${release}` === branch;
+            });
+            if (!exists) {
+                console.log(`Creating branch ${release} in project  ${project.name}` );
+                try {
+                    // Fetch the latest changes from the remote
+                    const ancestorBranch = AvniCodebase.getAncestorBranch(release, project)
+                    await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
+                    console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                } catch (error) {
+                    console.error('Error creating or pushing branch:', error);
+                }
+            }
+        }
+    }
+
+
+}
+
 async function main() {
     const args = process.argv.slice(2);
     if (args.length === 0) {
@@ -96,6 +123,9 @@ async function main() {
             break;
         case 'hasLocalChanges':
             await hasLocalChanges();
+            break;
+        case 'createRemoteBranches':
+            await createRemoteBranches();
             break;
         default:
             console.error(`Unknown command: ${command}`);

@@ -62,4 +62,12 @@ export class GitRepository {
         const diff = await git.diff();
         return !!diff;
     }
+
+    static async createBranchFromNearestAncestor(nearestAncestor: string,branch: string, project: Project) {
+        const git = simpleGit(`../${project.name}`);
+        await git.checkout([ nearestAncestor]);
+        await git.pull();
+        await git.branch([branch]);
+        await git.push(['--set-upstream', 'origin', branch]);
+    }
 }

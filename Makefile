@@ -38,3 +38,6 @@ create-local-branches:
 
 has-local-changes:
 	npx ts-node src/index.ts hasLocalChanges
+
+create-remote-branches:
+	npx ts-node src/index.ts createRemoteBranches

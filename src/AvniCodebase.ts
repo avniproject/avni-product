@@ -30,6 +30,17 @@ export class AvniCodebase {
             return  _.last(this.getReleases());
         }
         const index = _.indexOf(this.getReleases(), branch);
+        if(index == 0) {
+            throw new Error(`Ancestor branch does not exist for ${branch}`);
+        }
         return this.getReleases()[index - 1];
+    }
+
+    static getDescendantBranch(branch: string, project: Project): string {
+        if (_.last(this.getReleases()) === branch) {
+            return project["main-branch"];
+        }
+        const index = _.indexOf(this.getReleases(), branch);
+        return this.getReleases()[index + 1];
     }
 }

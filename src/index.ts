@@ -80,44 +80,83 @@ const readline = require('readline').createInterface({
     output: process.stdout
 });
 
-async function askUser(release: string, ancestorBranch: string) {
+async function askUser(query: string) {
     return new Promise(resolve => {
-        readline.question(`Do you want to create Remote Branch ${release} from parent branch "${ancestorBranch}" in origin? (yes/no): `, (response: string) => {
+        readline.question(query, (response: string) => {
             resolve(response.toLowerCase() === 'yes');
         });
     });
 }
 
-async function createRemoteBranches() {
+async function createRemoteBranches(specificProject: string) {
     const projects = AvniCodebase.getProjects();
     const releases = AvniCodebase.getReleases();
     for (const project of projects) {
-        const branches = await GitRepository.getRemoteBranches(project)
+        try {
+            if(specificProject && project.name !== specificProject) {
+                continue;
+            }
+            console.log(`Starting creation of Remote Branches for project ${project.name}`);
+            const branches = await GitRepository.getRemoteBranches(project)
+            for (const release of releases) {
+                const exists = _.some(branches, (branch: string) => {
+                    return `origin/${release}` === branch;
+                });
+                if (!exists) {
+                    try {
+                        const ancestorBranch = AvniCodebase.getAncestorBranch(release, project);
+                        console.log(`Remote Branch ${release} does not exist in ${project.name}.`);
+                        const query = `Do you want to create Remote Branch ${release} from parent branch "${ancestorBranch}" in origin? (yes/no): `;
+                        const response = await askUser(query);
+                        if (response) {
+                            console.log(`Creating branch ${release} in project  ${project.name}`);
 
-        for (const release of releases) {
-            const exists = _.some(branches, (branch: string) => {
-                return `origin/${release}` === branch;
-            });
-            if (!exists) {
-                try {
-                    const ancestorBranch = AvniCodebase.getAncestorBranch(release, project);
-                    console.log(`Remote Branch ${release} does not exist in ${project.name}.`);
-                    const response = await askUser(release, ancestorBranch);
-                    if (response) {
-                        console.log(`Creating branch ${release} in project  ${project.name}`);
-
-                        // Fetch the latest changes from the remote
-                        await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
-                        console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                            // Fetch the latest changes from the remote
+                            await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
+                            console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                        }
+                    } catch (error) {
+                        console.error('Error creating or pushing branch:', error);
+                        throw error;
                     }
-                } catch (error) {
-                    console.error('Error creating or pushing branch:', error);
                 }
             }
+        } catch (error) {
+            console.log(`Not proceeding further for this project ${project.name}`);
         }
     }
+}
 
+async function autoMergeBranches(specificProject: string) {
+    const projects = AvniCodebase.getProjects();
+    const releases = AvniCodebase.getReleases();
+    for (const project of projects) {
+        try {
+            if (specificProject && project.name !== specificProject) {
+                continue;
+            }
+            console.log(`Starting auto-merge of Branches for project ${project.name}`);
+            for (const ancestor of releases) {
+                try {
+                    const descendant = AvniCodebase.getDescendantBranch(ancestor, project);
+                    const query = `Do you want to merge ${ancestor} branch into "${descendant}" in origin? (yes/no): `;
+                    const response = await askUser(query);
+                    if (response) {
+                        console.log(`Merging branch "${ancestor}" into "${descendant}"  in project  ${project.name}`);
 
+                        // Fetch the latest changes from the remote
+                        await GitRepository.mergeAncestorIntoDescendant(ancestor, descendant, project)
+                        console.log(`Branch ${ancestor} merged into "${descendant}" and pushed to ${project.name}.`);
+                    }
+                } catch (error) {
+                    console.error('Error merging branch:', error);
+                    throw error;
+                }
+            }
+        } catch (error) {
+            console.log(`Not proceeding further for this project ${project.name}`);
+        }
+    }
 }
 
 async function main() {
@@ -128,6 +167,7 @@ async function main() {
     }
 
     const command = args[0];
+    const specificProject = args.length > 1 ? args[1] : null;
 
     switch (command) {
         case 'allBranchesExist':
@@ -143,7 +183,10 @@ async function main() {
             await hasLocalChanges();
             break;
         case 'createRemoteBranches':
-            await createRemoteBranches();
+            await createRemoteBranches(specificProject);
+            break;
+        case 'autoMergeBranches':
+            await autoMergeBranches(specificProject);
             break;
         default:
             console.error(`Unknown command: ${command}`);

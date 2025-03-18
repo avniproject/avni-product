@@ -40,4 +40,17 @@ has-local-changes:
 	npx ts-node src/index.ts hasLocalChanges
 
 create-remote-branches:
-	npx ts-node src/index.ts createRemoteBranches
+ifndef projectName
+	@echo "Please provide project name \"projectName\""
+	exit 1
+else
+	npx ts-node src/index.ts createRemoteBranches $(projectName)
+endif
+
+auto-merge-branches:
+ifndef projectName
+	@echo "Please provide project name \"projectName\""
+	exit 1
+else
+	npx ts-node src/index.ts autoMergeBranches $(projectName)
+endif

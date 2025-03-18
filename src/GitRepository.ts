@@ -63,11 +63,47 @@ export class GitRepository {
         return !!diff;
     }
 
-    static async createBranchFromNearestAncestor(nearestAncestor: string,branch: string, project: Project) {
+    static async createBranchFromNearestAncestor(nearestAncestor: string, branch: string, project: Project) {
         const git = simpleGit(`../${project.name}`);
         await git.checkout([ nearestAncestor]);
         await git.pull();
         await git.branch([branch]);
         await git.push(['--set-upstream', 'origin', branch]);
+    }
+
+    static async mergeAncestorIntoDescendant(ancestor: string, descendant: string, project: Project) {
+        try {
+            const git = simpleGit(`../${project.name}`);
+            // Checkout to child-branch
+            console.log(`Checking out to branch ${ancestor}`);
+            await git.checkout(ancestor);
+
+            // Pull the latest changes from child-branch
+            console.log(`Pulling changes from branch ${ancestor}`);
+            await git.pull();
+
+            // Checkout to parent-branch
+            console.log(`Checking out to branch ${descendant}`);
+            await git.checkout(descendant);
+
+            // Pull the latest changes from parent-branch
+            console.log(`Pulling changes from branch ${descendant}`);
+            await git.pull();
+
+            // Merge child-branch into parent-branch
+            console.log(`Merging ${ancestor} branch into ${descendant}`);
+            await git.merge([ancestor]);
+
+            // Push changes to origin parent-branch
+            console.log(`Pushing changes to origin ${descendant}`);
+            await git.push('origin', descendant);
+
+            // Check the status
+            console.log(`Checking Git status...`);
+            const status = await git.status();
+            console.log(status);
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 }

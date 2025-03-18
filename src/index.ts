@@ -6,14 +6,14 @@ async function allBranchesExist() {
     const projects = AvniCodebase.getProjects();
     const releases = AvniCodebase.getReleases();
     for (const project of projects) {
-        const branches = GitRepository.getRemoteBranches(project)
+        const branches = await GitRepository.getRemoteBranches(project)
 
         for (const release of releases) {
             const exists = _.some(branches, (branch: string) => {
                 return `origin/${release}` === branch;
             });
             if (!exists) {
-                console.log('Remove branch missing in ', project.name, release);
+                console.log('Remote branch missing in ', project.name, release);
             }
         }
     }

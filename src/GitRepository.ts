@@ -34,6 +34,16 @@ export class GitRepository {
         throw new Error(`No ancestor branch found for ${branch} and project ${project.name}`);
     }
 
+    static async getClosestDescendantBranch(branch: string, project: Project): Promise<string> {
+        const descendantBranch = AvniCodebase.getDescendantBranch(branch, project);
+        if (await this.branchExists(descendantBranch, project)) {
+            return descendantBranch;
+        } else if (descendantBranch) {
+            return await this.getClosestDescendantBranch(descendantBranch, project);
+        }
+        throw new Error(`No descendant branch found for ${branch} and project ${project.name}`);
+    }
+
     static async isBranchMerged(currentBranch: string, targetBranch: string, project: Project) {
         try {
             const git = simpleGit(`../${project.name}`);

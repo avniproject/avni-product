@@ -138,7 +138,7 @@ async function autoMergeBranches(specificProject: string) {
             console.log(`Starting auto-merge of Branches for project ${project.name}`);
             for (const ancestor of releases) {
                 try {
-                    const descendant = AvniCodebase.getDescendantBranch(ancestor, project);
+                    const descendant = await GitRepository.getClosestDescendantBranch(ancestor, project);
                     const query = `Do you want to merge ${ancestor} branch into "${descendant}" in origin? (yes/no): `;
                     const response = await askUser(query);
                     if (response) {

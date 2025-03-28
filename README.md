@@ -32,4 +32,8 @@ It auto merges ancestor branch into the descendant one level at a time for a spe
 Command Params: projectName=<project_name><br/>
 Ex: projectName=avni-server
 
+During Auto-merge, if there are merge conflicts, then the response would contain information about files that are pending merge and a message asking for merge conflict resolution. At this point, pause the auto-merge operation by not moving to the next release version merge.
+Switch to the repository being merged and resolve the merge-conflicts and push them to origin.
+Then resume the auto-merge by inputing "Yes(y)" or otherwise to instruct next release merge action.
+
 

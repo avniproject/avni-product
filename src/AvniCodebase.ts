@@ -27,10 +27,10 @@ export class AvniCodebase {
 
     static getAncestorBranch(branch: string, project: Project): string {
         if (project["main-branch"] === branch) {
-            return  _.last(this.getReleases());
+            return _.last(this.getReleases());
         }
         const index = _.indexOf(this.getReleases(), branch);
-        if(index == 0) {
+        if (index == 0) {
             throw new Error(`Ancestor branch does not exist for ${branch}`);
         }
         return this.getReleases()[index - 1];

@@ -3,10 +3,9 @@
 export default {
     "releases": [
         "12.0",
-        "12.0.1",
-        "12.0.2",
         "12.1",
-        "12.2"
+        "12.2",
+        "13.0"
     ],
     "projects": [
         {
@@ -33,14 +32,14 @@ export default {
             "name": "avni-models",
             "main-branch": "master"
         },
-        // {
-        //     "name": "avni-health-modules",
-        //     "main-branch": "master"
-        // },
-        // {
-        //     "name": "rules-config",
-        //     "main-branch": "master"
-        // },
+        {
+            "name": "avni-health-modules",
+            "main-branch": "master"
+        },
+        {
+            "name": "rules-config",
+            "main-branch": "master"
+        },
         {
             "name": "rules-server",
             "main-branch": "master"

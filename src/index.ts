@@ -88,12 +88,12 @@ async function askUser(query: string) {
     });
 }
 
-async function createRemoteBranches(specificProject: string) {
+async function createRemoteBranches(specificProject: string = null, createFromMainline: boolean = false) {
     const projects = AvniCodebase.getProjects();
     const releases = AvniCodebase.getReleases();
     for (const project of projects) {
         try {
-            if(specificProject && project.name !== specificProject) {
+            if (specificProject && project.name !== specificProject) {
                 continue;
             }
             console.log(`Starting creation of Remote Branches for project ${project.name}`);
@@ -104,21 +104,24 @@ async function createRemoteBranches(specificProject: string) {
                 });
                 if (!exists) {
                     try {
-                        const ancestorBranch = AvniCodebase.getAncestorBranch(release, project);
                         console.log(`Remote Branch ${release} does not exist in ${project.name}.`);
-                        const query = `Do you want to create Remote Branch ${release} from parent branch "${ancestorBranch}" in origin? (yes/no): `;
+                        const sourceBranch = createFromMainline ? project["main-branch"] : AvniCodebase.getAncestorBranch(release, project);
+                        const query = `Do you want to create Remote Branch ${release} from parent branch "${sourceBranch}" in origin? (yes/no): `;
                         const response = await askUser(query);
-                        if (response) {
-                            console.log(`Creating branch ${release} in project  ${project.name}`);
 
+                        if (response) {
+                            console.log(`Creating branch ${release} in project ${project.name} from parent branch "${sourceBranch}"`);
                             // Fetch the latest changes from the remote
-                            await GitRepository.createBranchFromNearestAncestor(ancestorBranch, release, project)
+                            await GitRepository.createBranch(sourceBranch, release, project)
                             console.log(`Branch ${release} created and pushed to ${project.name}.`);
+                            console.log();
                         }
                     } catch (error) {
                         console.error('Error creating or pushing branch:', error);
                         throw error;
                     }
+                } else {
+                    console.log(`Remote Branch ${release} already exists in ${project.name}.`);
                 }
             }
         } catch (error) {
@@ -159,6 +162,17 @@ async function autoMergeBranches(specificProject: string) {
     }
 }
 
+async function hasUnpushedChanges() {
+    const projects = AvniCodebase.getProjects();
+    for (const project of projects) {
+        if (await GitRepository.hasUnpushedCommits(project)) {
+            console.warn('[WARN] Project has unpushed commits: ', project.name);
+        } else {
+            console.info('Project has no unpushed commits: ', project.name);
+        }
+    }
+}
+
 async function main() {
     const args = process.argv.slice(2);
     if (args.length === 0) {
@@ -181,9 +195,13 @@ async function main() {
             break;
         case 'hasLocalChanges':
             await hasLocalChanges();
+            await hasUnpushedChanges();
             break;
         case 'createRemoteBranches':
             await createRemoteBranches(specificProject);
+            break;
+        case 'createAllRemoteBranchesFromMainline':
+            await createRemoteBranches(null, true);
             break;
         case 'autoMergeBranches':
             await autoMergeBranches(specificProject);
@@ -194,4 +212,7 @@ async function main() {
     }
 }
 
-main().then(() => console.log('done'));
+main().then(() => {
+    console.log('done');
+    process.exit(0);
+});

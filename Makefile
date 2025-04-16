@@ -47,6 +47,9 @@ else
 	npx ts-node src/index.ts createRemoteBranches $(projectName)
 endif
 
+create-all-remote-branches-from-mainline:
+	npx ts-node src/index.ts createAllRemoteBranchesFromMainline
+
 auto-merge-branches:
 ifndef projectName
 	@echo "Please provide project name \"projectName\""

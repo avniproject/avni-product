@@ -4,6 +4,23 @@ import _ from "lodash";
 import {originBranch} from "./util";
 
 export class GitRepository {
+    static async hasUnpushedCommits(project: Project) {
+        // Fetch latest remote info
+        const git = simpleGit(`../${project.name}`);
+        await git.fetch();
+
+        // Get list of unpushed commits
+        // Get the name of the current branch
+        const status = await git.status();
+        const branch = status.current;
+
+        // Get the list of commits present locally but not on remote
+        const unpushedCommits = await git.log([`origin/${branch}..${branch}`]);
+
+        // If there are any unpushed commits, the array will not be empty
+        return unpushedCommits.total > 0;
+    }
+
     static async branchExists(branch: string, project: Project) {
         const branches = await this.getRemoteBranches(project);
         return _.some(branches, (b: string) => {
@@ -73,12 +90,12 @@ export class GitRepository {
         return !!diff;
     }
 
-    static async createBranchFromNearestAncestor(nearestAncestor: string, branch: string, project: Project) {
+    static async createBranch(fromBranch: string, toBranch: string, project: Project) {
         const git = simpleGit(`../${project.name}`);
-        await git.checkout([ nearestAncestor]);
+        await git.checkout([ fromBranch]);
         await git.pull();
-        await git.branch([branch]);
-        await git.push(['--set-upstream', 'origin', branch]);
+        await git.branch([toBranch]);
+        await git.push(['--set-upstream', 'origin', toBranch]);
     }
 
     static async mergeAncestorIntoDescendant(ancestor: string, descendant: string, project: Project) {

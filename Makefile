@@ -1,45 +1,30 @@
-labelName:= "On+Hold"
-githubAPI:= https://api.github.com/repos/avniproject
-color:= $(if $(color),$(color),1d76db)
+help:
+	@IFS=$$'\n' ; \
+	help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//'`); \
+	for help_line in $${help_lines[@]}; do \
+	    IFS=$$'#' ; \
+	    help_split=($$help_line) ; \
+	    help_command=`echo $${help_split[0]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
+	    help_info=`echo $${help_split[2]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \
+	    printf "%-30s %s\n" $$help_command $$help_info ; \
+	done
 
-label = \
-    curl -X DELETE $(githubAPI)/$(1)/labels/$(labelName) \
-    -H "Authorization: token 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" \
-
-create_release_label:
-ifndef labelName
-	@echo "Please provide label name"
-	exit 1
-else
-	make create_label token=$(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) labelName=$(labelName) color=$(color)
-endif
-
-delete_label:
-	$(call label,avni-product)
-	$(call label,avni-client)
-	$(call label,avni-server)
-	$(call label,avni-webapp)
-	$(call label,rules-config)
-	$(call label,avni-models)
-	$(call label,rules-server)
-	$(call label,avni-canned-reports)
-
-deps:
+deps: ## install npm dependencies
 	npm install
 
-branch-merge-test:
+branch-merge-test: ## checks in origin branches if the immediate ancestor has been merged
 	npx ts-node src/index.ts areAllBranchesMerged
 
-all-branches-exist:
+all-branches-exist: ## Check if all branches exist in the origin.
 	npx ts-node src/index.ts allBranchesExist
 
-create-local-branches:
+create-local-branches: ## Create local branches for all the projects, if it exists in the origin and not created locally
 	npx ts-node src/index.ts createLocalBranches
 
-has-local-changes:
+has-local-changes: ## Check if you have any local uncommited or unpushed changes
 	npx ts-node src/index.ts hasLocalChanges
 
-create-remote-branches:
+create-remote-branches: ## Create remote branches if it does not exist in the origin
 ifndef projectName
 	@echo "Please provide project name \"projectName\""
 	exit 1
@@ -47,10 +32,10 @@ else
 	npx ts-node src/index.ts createRemoteBranches $(projectName)
 endif
 
-create-all-remote-branches-from-mainline:
+create-all-remote-branches-from-mainline: ## Create remote branches if it does not exist in the origin, from ancestor one level at a time for all projects
 	npx ts-node src/index.ts createAllRemoteBranchesFromMainline
 
-auto-merge-branches:
+merge-branches: ## merge branches with their immediate ancestor
 ifndef projectName
 	@echo "Please provide project name \"projectName\""
 	exit 1

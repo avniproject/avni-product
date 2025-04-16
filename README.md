@@ -18,6 +18,9 @@ Create remote branches if it does not exist in the origin, from ancestor one lev
 Command Params: projectName=<project_name><br/>
 Ex: projectName=avni-server
 
+### create-all-remote-branches-from-mainline
+Create remote branches if it does not exist in the origin, from ancestor one level at a time for all projects
+
 ### has-local-changes
 Check if you have any local changes. This is required if you want to create local branches, or otherwise.
 
@@ -27,8 +30,8 @@ Create local branches for all the projects, if it exists in the origin and not c
 ### branch-merge-test
 It checks in origin branches if the immediate ancestor has been merged.
 
-### auto-merge-branches
-It auto merges ancestor branch into the descendant one level at a time for a specific project.<br/>
+### merge-branches
+It merges ancestor branch into the descendant one level at a time for a specific project.<br/>
 Command Params: projectName=<project_name><br/>
 Ex: projectName=avni-server
 

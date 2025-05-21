@@ -8,7 +8,7 @@ Ensure that the `src/code.ts` **"releases"** section is up to date to reflect on
 **Remove any older invalid releases from there.**
 
 
-Six makefile targets are available. Typically one may use them in this order.
+Seven makefile targets are available. Typically, one would use them in following order.
 
 ### all-branches-exist
 Check if all branches exist in the origin.

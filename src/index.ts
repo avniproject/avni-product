@@ -83,7 +83,7 @@ const readline = require('readline').createInterface({
 async function askUser(query: string) {
     return new Promise(resolve => {
         readline.question(query, (response: string) => {
-            resolve(response.toLowerCase() === 'yes');
+            resolve(response.toLowerCase() === 'yes' || response.toLowerCase() === 'y');
         });
     });
 }
@@ -106,7 +106,7 @@ async function createRemoteBranches(specificProject: string = null, createFromMa
                     try {
                         console.log(`Remote Branch ${release} does not exist in ${project.name}.`);
                         const sourceBranch = createFromMainline ? project["main-branch"] : AvniCodebase.getAncestorBranch(release, project);
-                        const query = `Do you want to create Remote Branch ${release} from parent branch "${sourceBranch}" in origin? (yes/no): `;
+                        const query = `Do you want to create Remote Branch ${release} from parent branch "${sourceBranch}" in origin? (yes/y to proceed): `;
                         const response = await askUser(query);
 
                         if (response) {
@@ -142,7 +142,7 @@ async function autoMergeBranches(specificProject: string) {
             for (const ancestor of releases) {
                 try {
                     const descendant = await GitRepository.getClosestDescendantBranch(ancestor, project);
-                    const query = `Do you want to merge ${ancestor} branch into "${descendant}" in origin? (yes/no): `;
+                    const query = `Do you want to merge ${ancestor} branch into "${descendant}" in origin? (yes/y to proceed): `;
                     const response = await askUser(query);
                     if (response) {
                         console.log(`Merging branch "${ancestor}" into "${descendant}"  in project  ${project.name}`);

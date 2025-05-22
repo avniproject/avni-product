@@ -42,3 +42,14 @@ ifndef projectName
 else
 	npx ts-node src/index.ts autoMergeBranches $(projectName)
 endif
+
+tag-all-repos-with-release-version: ## tag all repositories with a release version (e.g. make tag-all-repos-with-release-version releaseBranch=13.0 releaseTag=v13.0.0)
+ifndef releaseBranch
+	@echo "Please provide release branch \"releaseBranch\""
+	exit 1
+else ifndef releaseTag
+	@echo "Please provide release tag \"releaseTag\""
+	exit 1
+else
+	npx ts-node src/index.ts tag-all-repos-with-release-version "" "$(releaseBranch)" "$(releaseTag)"
+endif

@@ -173,6 +173,54 @@ async function hasUnpushedChanges() {
     }
 }
 
+async function tagAllReposWithReleaseVersion(releaseBranch: string, releaseTag: string) {
+    if (!releaseBranch) {
+        console.error('Release branch is required');
+        process.exit(1);
+    }   
+    if (!releaseTag) {
+        console.error('Release tag is required');
+        process.exit(1);
+    }
+    
+    console.log(`Starting to tag all repositories with ${releaseTag} from branch ${releaseBranch || 'main'}`);
+    
+    const projects = AvniCodebase.getProjects();
+    // Filter out ignored repositories
+    const ignoredRepos = ['avni-models', 'avni-health-modules', 'rules-config'];
+    const filteredProjects = projects.filter(project => !ignoredRepos.includes(project.name));
+    console.log(`Ignoring repositories: ${ignoredRepos.join(', ')}`);
+
+    const results = [];
+    
+    for (const project of filteredProjects) {
+        console.log(`\n\nProcessing project: ${project.name}`);
+        try {
+            const success = await GitRepository.tagRepository(project, releaseTag, releaseBranch);
+            results.push({ project: project.name, success });
+        } catch (error) {
+            console.error(`Error processing project ${project.name}:`, error);
+            results.push({ project: project.name, success: false, error: error instanceof Error ? error.message : String(error) });
+        }
+    }
+    
+    console.log('\n\n===== Tagging Summary =====');
+    let successCount = 0;
+    let failureCount = 0;
+    
+    for (const result of results) {
+        if (result.success) {
+            console.log(`✅ ${result.project}: Successfully tagged`);
+            successCount++;
+        } else {
+            console.error(`❌ ${result.project}: Failed to tag${result.error ? ` - ${result.error}` : ''}`);
+            failureCount++;
+        }
+    }
+    
+    console.log(`\nTotal: ${results.length}, Success: ${successCount}, Failed: ${failureCount}`);
+}
+
 async function main() {
     const args = process.argv.slice(2);
     if (args.length === 0) {
@@ -182,6 +230,8 @@ async function main() {
 
     const command = args[0];
     const specificProject = args.length > 1 ? args[1] : null;
+    const releaseBranch = args.length > 2 ? args[2] : null;
+    const releaseTag = args.length > 3 ? args[3] : null;
 
     switch (command) {
         case 'allBranchesExist':
@@ -205,6 +255,9 @@ async function main() {
             break;
         case 'autoMergeBranches':
             await autoMergeBranches(specificProject);
+            break;
+        case 'tag-all-repos-with-release-version':
+            await tagAllReposWithReleaseVersion(releaseBranch, releaseTag);
             break;
         default:
             console.error(`Unknown command: ${command}`);

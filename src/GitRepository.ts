@@ -4,6 +4,36 @@ import _ from "lodash";
 import {originBranch} from "./util";
 
 export class GitRepository {
+    static async tagRepository(project: Project, releaseTag: string, branch?: string) {
+        try {
+            const git = simpleGit(`../${project.name}`);
+            // Checkout to specified branch - error if not specified
+            if (!branch) {
+                throw new Error(`No branch specified for tagging project ${project.name}`);
+            }
+            console.log(`Checking out to branch ${branch} for project ${project.name}`);
+            await git.checkout(branch);
+            
+            // Pull the latest changes
+            console.log(`Pulling latest changes for ${project.name}`);
+            await git.pull();
+            
+            // Create and push tag
+            console.log(`Creating tag ${releaseTag} for project ${project.name}`);
+            await git.addTag(releaseTag);
+            
+            // Push the tag to remote
+            console.log(`Pushing tag ${releaseTag} to remote for project ${project.name}`);
+            await git.pushTags();
+            
+            console.log(`Successfully tagged ${project.name} with ${releaseTag}`);
+            return true;
+        } catch (error) {
+            console.error(`Error tagging repository ${project.name}:`, error);
+            return false;
+        }
+    }
+    
     static async hasUnpushedCommits(project: Project) {
         // Fetch latest remote info
         const git = simpleGit(`../${project.name}`);

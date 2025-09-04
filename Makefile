@@ -32,6 +32,9 @@ else
 	npx ts-node src/index.ts createRemoteBranches $(projectName)
 endif
 
+create-all-remote-branches: ## Create remote branches if it does not exist in the origin, from ancestor one level at a time for all projects
+	npx ts-node src/index.ts createAllRemoteBranches
+
 create-all-remote-branches-from-mainline: ## Create remote branches if it does not exist in the origin, from ancestor one level at a time for all projects
 	npx ts-node src/index.ts createAllRemoteBranchesFromMainline
 

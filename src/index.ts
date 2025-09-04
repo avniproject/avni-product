@@ -286,6 +286,9 @@ async function main() {
         case 'createRemoteBranches':
             await createRemoteBranches(specificProject);
             break;
+        case 'createAllRemoteBranches':
+            await createRemoteBranches(null, false);
+            break;
         case 'createAllRemoteBranchesFromMainline':
             await createRemoteBranches(null, true);
             break;

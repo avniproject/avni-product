@@ -53,3 +53,14 @@ else ifndef releaseTag
 else
 	npx ts-node src/index.ts tag-all-repos-with-release-version "" "$(releaseBranch)" "$(releaseTag)"
 endif
+
+check-commits: ## check commit count between two branches or tags (e.g. make check-commits fromBranch=main toBranch=feature-branch)
+ifndef fromBranch
+	@echo "Please provide from branch \"fromBranch\""
+	exit 1
+else ifndef toBranch
+	@echo "Please provide to branch \"toBranch\""
+	exit 1
+else
+	npx ts-node src/index.ts checkCommits $(fromBranch) $(toBranch)
+endif

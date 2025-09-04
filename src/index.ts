@@ -1,6 +1,7 @@
 import {AvniCodebase, Project} from "./AvniCodebase";
 import _ from "lodash";
 import {GitRepository} from "./GitRepository";
+import { execSync } from 'child_process';
 
 async function allBranchesExist() {
     const projects = AvniCodebase.getProjects();
@@ -177,14 +178,14 @@ async function tagAllReposWithReleaseVersion(releaseBranch: string, releaseTag: 
     if (!releaseBranch) {
         console.error('Release branch is required');
         process.exit(1);
-    }   
+    }
     if (!releaseTag) {
         console.error('Release tag is required');
         process.exit(1);
     }
-    
+
     console.log(`Starting to tag all repositories with ${releaseTag} from branch ${releaseBranch || 'main'}`);
-    
+
     const projects = AvniCodebase.getProjects();
     // Filter out ignored repositories
     const ignoredRepos = ['avni-models', 'avni-health-modules', 'rules-config'];
@@ -192,7 +193,7 @@ async function tagAllReposWithReleaseVersion(releaseBranch: string, releaseTag: 
     console.log(`Ignoring repositories: ${ignoredRepos.join(', ')}`);
 
     const results = [];
-    
+
     for (const project of filteredProjects) {
         console.log(`\n\nProcessing project: ${project.name}`);
         try {
@@ -203,11 +204,11 @@ async function tagAllReposWithReleaseVersion(releaseBranch: string, releaseTag: 
             results.push({ project: project.name, success: false, error: error instanceof Error ? error.message : String(error) });
         }
     }
-    
+
     console.log('\n\n===== Tagging Summary =====');
     let successCount = 0;
     let failureCount = 0;
-    
+
     for (const result of results) {
         if (result.success) {
             console.log(`✅ ${result.project}: Successfully tagged`);
@@ -217,8 +218,43 @@ async function tagAllReposWithReleaseVersion(releaseBranch: string, releaseTag: 
             failureCount++;
         }
     }
-    
+
     console.log(`\nTotal: ${results.length}, Success: ${successCount}, Failed: ${failureCount}`);
+}
+
+async function checkCommits(fromBranch: string, toBranch: string): Promise<void> {
+    try {
+        // Get list of all repositories in avniproject organization
+        const reposOutput = execSync('gh repo list avniproject --json name --jq ".[].name"', {
+            encoding: 'utf8'
+        });
+
+        const repositories = reposOutput.trim().split('\n').filter(repo => repo.length > 0);
+
+        console.log(`Checking commits between branches ${fromBranch} and ${toBranch}...\n`);
+
+        for (const repo of repositories) {
+            try {
+                // Get commit count between branches for this repository
+                const countOutput = execSync(
+                    `gh api repos/avniproject/${repo}/compare/${fromBranch}...${toBranch} --jq '.commits | length'`,
+                    { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }
+                );
+
+                const count = parseInt(countOutput.trim());
+
+                if (!isNaN(count) && count > 0) {
+                    console.log(`${repo}: ${count} commits`);
+                }
+            } catch (error) {
+                // Silently ignore errors (like when branches don't exist in a repo)
+                continue;
+            }
+        }
+    } catch (error) {
+        console.error('Error checking commits:', error);
+        process.exit(1);
+    }
 }
 
 async function main() {
@@ -258,6 +294,13 @@ async function main() {
             break;
         case 'tag-all-repos-with-release-version':
             await tagAllReposWithReleaseVersion(releaseBranch, releaseTag);
+            break;
+        case 'checkCommits':
+            if (!specificProject || !releaseBranch) {
+                console.error('Usage: checkCommits <fromBranch> <toBranch>');
+                process.exit(1);
+            }
+            await checkCommits(specificProject, releaseBranch);
             break;
         default:
             console.error(`Unknown command: ${command}`);

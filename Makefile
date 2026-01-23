@@ -46,6 +46,14 @@ else
 	npx ts-node src/index.ts autoMergeBranches $(projectName)
 endif
 
+rebase-branch-to-mainline: ## rebase a branch on top of main/master branch for all projects (e.g. make rebase-branch-to-mainline branchName=16.5)
+ifndef branchName
+	@echo "Please provide branch name \"branchName\""
+	exit 1
+else
+	npx ts-node src/index.ts rebaseBranchToMainline $(branchName)
+endif
+
 tag-all-repos-with-release-version: ## tag all repositories with a release version (e.g. make tag-all-repos-with-release-version releaseBranch=13.0 releaseTag=v13.0.0)
 ifndef releaseBranch
 	@echo "Please provide release branch \"releaseBranch\""

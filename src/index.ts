@@ -257,6 +257,44 @@ async function checkCommits(fromBranch: string, toBranch: string): Promise<void>
     }
 }
 
+async function rebaseAllBranches(branchName: string) {
+    if (!branchName) {
+        console.error('Branch name is required');
+        process.exit(1);
+    }
+
+    const projects = AvniCodebase.getProjects();
+    
+    for (const project of projects) {
+        try {
+            console.log(`\n\n\nProcessing project: ${project.name}`);
+            
+            // Check if branch exists in remote
+            const branches = await GitRepository.getRemoteBranches(project);
+            const branchExists = _.some(branches, (branch: string) => {
+                return `origin/${branchName}` === branch;
+            });
+            
+            if (!branchExists) {
+                console.warn(`[WARN] Branch ${branchName} does not exist in ${project.name}`);
+                continue;
+            }
+            
+            const query = `Do you want to rebase branch "${branchName}" on top of ${project["main-branch"] || "master"} in ${project.name}? (yes/y to proceed): `;
+            const response = await askUser(query);
+            
+            if (response) {
+                await GitRepository.rebaseBranchOnMainline(branchName, project);
+            } else {
+                console.log(`Skipping rebase for ${project.name}`);
+            }
+            
+        } catch (error) {
+            console.error(`Error processing project ${project.name}:`, error);
+        }
+    }
+}
+
 async function main() {
     const args = process.argv.slice(2);
     if (args.length === 0) {
@@ -294,6 +332,9 @@ async function main() {
             break;
         case 'autoMergeBranches':
             await autoMergeBranches(specificProject);
+            break;
+        case 'rebaseBranchToMainline':
+            await rebaseAllBranches(specificProject);
             break;
         case 'tag-all-repos-with-release-version':
             await tagAllReposWithReleaseVersion(releaseBranch, releaseTag);

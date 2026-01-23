@@ -163,4 +163,39 @@ export class GitRepository {
             console.error('An error occurred:', error);
         }
     }
+
+    static async rebaseBranchOnMainline(branchName: string, project: Project) {
+        try {
+            const git = simpleGit(`../${project.name}`);
+            const mainBranch = project["main-branch"] || "master";
+            
+            console.log(`\nRebasing ${branchName} on top of ${mainBranch} for project ${project.name}`);
+            
+            // Fetch latest changes
+            console.log(`Fetching latest changes...`);
+            await git.fetch('origin');
+            
+            // Checkout the branch to rebase
+            console.log(`Checking out to branch ${branchName}`);
+            await git.checkout(branchName);
+            
+            // Ensure branch is up to date
+            console.log(`Pulling changes from branch ${branchName}`);
+            await git.pull('origin', branchName);
+            
+            // Rebase on main branch
+            console.log(`Rebasing ${branchName} on top of ${mainBranch}...`);
+            await git.rebase([`origin/${mainBranch}`]);
+            
+            // Force push the rebased branch
+            console.log(`Pushing rebased branch to origin ${branchName}...`);
+            await git.push('origin', branchName, ['--force-with-lease']);
+            
+            console.log(`Successfully rebased ${branchName} for ${project.name}`);
+            
+        } catch (error) {
+            console.error(`Error rebasing branch for ${project.name}:`, error);
+            throw error;
+        }
+    }
 }

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Share — App View vs PDF</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 40px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #263238;
+    text-align: center;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #90A4AE;
+    text-align: center;
+    margin-top: -8px;
+  }
+
+  .comparison-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .side-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #546E7A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .arrow {
+    align-self: center;
+    margin-top: 160px;
+    font-size: 28px;
+    color: #B0BEC5;
+    flex-shrink: 0;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 260px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    border: 1px solid #CFD8DC;
+  }
+
+  .status-bar {
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── APP VIEW ── */
+  .app-screen { background: #F5F5F5; }
+
+  /* Profile card — avatar + name + demographics */
+  .app-profile-card {
+    background: #fff;
+    padding: 12px 12px 0;
+    border-bottom: 1px solid #EEEEEE;
+  }
+
+  .app-profile-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .app-avatar {
+    width: 42px;
+    height: 42px;
+    background: #E0F2F1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #00695C;
+    flex-shrink: 0;
+  }
+
+  .app-profile-info { flex: 1; }
+  .app-profile-name { font-size: 14px; font-weight: 700; color: #212121; }
+  .app-profile-meta { font-size: 9px; color: #78909C; margin-top: 3px; line-height: 1.5; }
+
+  /* Action icons row */
+  .app-action-icons {
+    display: flex;
+    border-top: 1px solid #F0F0F0;
+    padding: 8px 0 8px;
+  }
+
+  .app-action {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .app-action-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #00897B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .app-action-label {
+    font-size: 8px;
+    color: #546E7A;
+    text-align: center;
+  }
+
+  /* Completed encounters section label */
+  .app-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #90A4AE;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 8px 12px 4px;
+    background: #F5F5F5;
+  }
+
+  /* Form fill card */
+  .app-form-card {
+    background: #fff;
+    margin: 0 0 1px;
+    border-bottom: 1px solid #E0E0E0;
+  }
+
+  .app-form-header {
+    padding: 8px 12px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .app-form-title { font-size: 12px; font-weight: 600; color: #212121; }
+  .app-form-meta  { font-size: 9px; color: #90A4AE; margin-top: 2px; line-height: 1.4; }
+  .app-chevron    { font-size: 14px; color: #B0BEC5; margin-top: 2px; }
+
+  /* Expanded sections */
+  .app-section { border-bottom: 1px solid #E0E0E0; }
+  .app-section-header {
+    background: #EEEEEE;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .app-section-title { font-size: 11px; font-weight: 700; color: #37474F; }
+  .app-edit { font-size: 10px; font-weight: 600; color: #00897B; }
+
+  .app-table { width: 100%; border-collapse: collapse; }
+  .app-table td {
+    font-size: 10px;
+    padding: 5px 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #F5F5F5;
+    color: #37474F;
+  }
+  .app-table td:first-child { color: #78909C; width: 48%; }
+  .app-table td:last-child  { font-weight: 400; color: #212121; }
+  .app-media-icon { font-size: 14px; color: #00897B; }
+
+  /* ── PDF VIEW (Minimal theme) ── */
+  .pdf-screen {
+    background: #616161;
+    padding: 8px;
+  }
+
+  .pdf-page {
+    background: #fff;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 8px;
+  }
+
+  /* Minimal: blue-grey header */
+  .pdf-doc-header {
+    background: #455A64;
+    color: #fff;
+    padding: 8px 10px;
+  }
+  .pdf-doc-title { font-size: 12px; font-weight: 700; }
+  .pdf-doc-sub   { font-size: 9px; color: #CFD8DC; margin-top: 2px; line-height: 1.4; }
+
+  /* Minimal: light grey form band */
+  .pdf-form-meta {
+    background: #F5F5F5;
+    padding: 5px 10px;
+    border-bottom: 1px solid #E0E0E0;
+  }
+  .pdf-form-name { font-size: 10px; font-weight: 700; color: #212121; }
+  .pdf-form-sub  { font-size: 8px; color: #607D8B; margin-top: 1px; line-height: 1.4; }
+
+  .pdf-body { padding: 6px 8px; }
+
+  .pdf-section { margin-bottom: 6px; }
+
+  /* Minimal: light grey section headers */
+  .pdf-section-header {
+    background: #EEEEEE;
+    padding: 4px 8px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #424242;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .pdf-table { width: 100%; border-collapse: collapse; }
+  .pdf-table td {
+    font-size: 9px;
+    padding: 4px 8px;
+    vertical-align: top;
+    border-bottom: 1px solid #F5F5F5;
+    color: #212121;
+  }
+  .pdf-table tr:nth-child(even) td { background: #FAFAFA; }
+  .pdf-table td:first-child { color: #607D8B; width: 48%; }
+
+  .pdf-watermark {
+    text-align: center;
+    font-size: 8px;
+    color: #B0BEC5;
+    padding: 6px 0 4px;
+    border-top: 1px solid #EEEEEE;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Form Share — App view vs PDF output</h1>
+<p class="subtitle">Left: subject profile with expanded form &nbsp;·&nbsp; Right: shared PDF</p>
+
+<div class="comparison-card">
+
+  <!-- LEFT: App view -->
+  <div class="side">
+    <div class="side-label">App — subject profile</div>
+    <div class="phone">
+      <div class="status-bar"><span>11:35</span><span>5G 🔋28</span></div>
+      <div class="app-screen">
+
+        <!-- Profile card: avatar + name + icons -->
+        <div class="app-profile-card">
+          <div class="app-profile-top">
+            <div class="app-avatar">AD</div>
+            <div class="app-profile-info">
+              <div class="app-profile-name">Adam D</div>
+              <div class="app-profile-meta">Male, 33 Years, Beed,<br>Anjanwati, Anjanwati P.T.1</div>
+            </div>
+          </div>
+          <div class="app-action-icons">
+            <div class="app-action">
+              <div class="app-action-icon">📍</div>
+              <div class="app-action-label">Location</div>
+            </div>
+            <div class="app-action">
+              <div class="app-action-icon">💬</div>
+              <div class="app-action-label">comments</div>
+            </div>
+            <div class="app-action">
+              <div class="app-action-icon">📞</div>
+              <div class="app-action-label">Call</div>
+            </div>
+            <div class="app-action">
+              <div class="app-action-icon">🟢</div>
+              <div class="app-action-label">whatsApp</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed encounters label -->
+        <div class="app-section-label">Completed Encounters</div>
+
+        <!-- Form fill card — expanded -->
+        <div class="app-form-card">
+          <div class="app-form-header">
+            <div>
+              <div class="app-form-title">Farmer Endline</div>
+              <div class="app-form-meta">Visit Date: 04 Feb 2026 by Anjali Bhagabati<br>Unplanned Visit</div>
+            </div>
+            <div class="app-chevron">∧</div>
+          </div>
+
+          <!-- Details -->
+          <div class="app-section">
+            <div class="app-section-header">
+              <span class="app-section-title">Details</span>
+              <span class="app-edit">Edit</span>
+            </div>
+            <table class="app-table">
+              <tr><td>NGO Name</td><td>ABC Multipurpose Vikas Sanstha, Nashik</td></tr>
+              <tr><td>Total farm area on which Silt is spread</td><td>1 acres</td></tr>
+              <tr><td>Total cost for carting silt (INR)</td><td>1</td></tr>
+              <tr><td>Total silt excavated</td><td>16.2 cu.m.</td></tr>
+            </table>
+          </div>
+
+          <!-- Farmer Details -->
+          <div class="app-section">
+            <div class="app-section-header">
+              <span class="app-section-title">Farmer Details</span>
+              <span class="app-edit">Edit</span>
+            </div>
+            <table class="app-table">
+              <tr><td>Village of farmer</td><td>121</td></tr>
+              <tr><td>Type of ID</td><td>Ration Card</td></tr>
+              <tr><td>ID card number</td><td>XXXXX</td></tr>
+              <tr><td>Distance from waterbody</td><td>0-1 Km</td></tr>
+              <tr><td>Category of farmer</td><td>Marginal: 0-2.47 acres</td></tr>
+              <tr><td>Land holding</td><td>1</td></tr>
+              <tr><td>Upload Panchnama</td><td><span class="app-media-icon">⬇</span></td></tr>
+            </table>
+          </div>
+
+          <!-- Other Details -->
+          <div class="app-section">
+            <div class="app-section-header">
+              <span class="app-section-title">Other details</span>
+              <span class="app-edit">Edit</span>
+            </div>
+            <table class="app-table">
+              <tr><td>Type of land silt is spread on</td><td>Barren</td></tr>
+              <tr><td>Major crops grown on the land</td><td>Paddy (Rice), Maize, Soybean, Wheat, Cotton</td></tr>
+              <tr><td>Major crops to be grown where silt is spread</td><td>Paddy (Rice)</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow">→</div>
+
+  <!-- RIGHT: PDF output -->
+  <div class="side">
+    <div class="side-label">PDF output</div>
+    <div class="phone">
+      <div class="status-bar"><span>11:35</span><span>5G 🔋28</span></div>
+      <div class="pdf-screen">
+        <div class="pdf-page">
+          <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf · Page 1 of 1</div>
+
+          <!-- Subject header -->
+          <div class="pdf-doc-header">
+            <div class="pdf-doc-title">Adam D</div>
+            <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati, Anjanwati P.T.1</div>
+          </div>
+
+          <!-- Form metadata -->
+          <div class="pdf-form-meta">
+            <div class="pdf-form-name">Farmer Endline</div>
+            <div class="pdf-form-sub">Visit Date: 04 Feb 2026 by Anjali Bhagabati · Unplanned Visit</div>
+          </div>
+
+          <div class="pdf-body">
+
+            <!-- Details -->
+            <div class="pdf-section">
+              <div class="pdf-section-header">Details</div>
+              <table class="pdf-table">
+                <tr><td>NGO Name</td><td>ABC Multipurpose Vikas Sanstha, Nashik</td></tr>
+                <tr><td>Total farm area (silt spread)</td><td>1 acres</td></tr>
+                <tr><td>Cost for carting silt (INR)</td><td>1</td></tr>
+                <tr><td>Total silt excavated</td><td>16.2 cu.m.</td></tr>
+              </table>
+            </div>
+
+            <!-- Farmer Details -->
+            <div class="pdf-section">
+              <div class="pdf-section-header">Farmer Details</div>
+              <table class="pdf-table">
+                <tr><td>Village of farmer</td><td>121</td></tr>
+                <tr><td>Type of ID</td><td>Ration Card</td></tr>
+                <tr><td>ID card number</td><td>XXXXX</td></tr>
+                <tr><td>Distance from waterbody</td><td>0-1 Km</td></tr>
+                <tr><td>Category of farmer</td><td>Marginal: 0-2.47 acres</td></tr>
+                <tr><td>Land holding</td><td>1</td></tr>
+              </table>
+            </div>
+
+            <!-- Other Details -->
+            <div class="pdf-section">
+              <div class="pdf-section-header">Other Details</div>
+              <table class="pdf-table">
+                <tr><td>Type of land</td><td>Barren</td></tr>
+                <tr><td>Major crops grown</td><td>Paddy, Maize, Soybean, Wheat, Cotton</td></tr>
+                <tr><td>Crops where silt spread</td><td>Paddy (Rice)</td></tr>
+              </table>
+            </div>
+
+            <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

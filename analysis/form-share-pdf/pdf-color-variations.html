@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Color Variations</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 32px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  h1 { font-size: 15px; font-weight: 700; color: #263238; }
+  .subtitle { font-size: 11px; color: #90A4AE; margin-top: -12px; }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .variant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .variant-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #546E7A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Mini PDF page */
+  .pdf-page {
+    width: 200px;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+  }
+
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 7px;
+    font-weight: 700;
+    padding: 3px 6px;
+  }
+
+  .pdf-doc-header {
+    color: #fff;
+    padding: 7px 8px;
+  }
+  .pdf-doc-title { font-size: 11px; font-weight: 700; }
+  .pdf-doc-sub   { font-size: 8px; opacity: 0.8; margin-top: 2px; line-height: 1.4; }
+
+  .pdf-form-meta {
+    padding: 4px 8px;
+    border-bottom: 1px solid #CFD8DC;
+  }
+  .pdf-form-name { font-size: 9px; font-weight: 700; }
+  .pdf-form-sub  { font-size: 7px; color: #607D8B; margin-top: 1px; }
+
+  .pdf-body { padding: 5px 7px; }
+
+  .pdf-section { margin-bottom: 5px; }
+  .pdf-section-header {
+    padding: 3px 6px;
+    font-size: 7px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .pdf-table { width: 100%; border-collapse: collapse; }
+  .pdf-table td {
+    font-size: 7px;
+    padding: 3px 6px;
+    vertical-align: top;
+    border-bottom: 1px solid #ECEFF1;
+    color: #212121;
+  }
+  .pdf-table tr:nth-child(even) td { background: #FAFAFA; }
+  .pdf-table td:first-child { color: #607D8B; width: 48%; }
+
+  .pdf-watermark {
+    text-align: center;
+    font-size: 6px;
+    color: #B0BEC5;
+    padding: 4px 0 3px;
+    border-top: 1px solid #ECEFF1;
+    margin-top: 3px;
+  }
+
+  /* ── COLOUR THEMES ── */
+
+  /* 1. Teal (current) */
+  .theme-teal .pdf-doc-header    { background: #00897B; }
+  .theme-teal .pdf-form-meta     { background: #E0F2F1; }
+  .theme-teal .pdf-form-name     { color: #00695C; }
+  .theme-teal .pdf-section-header{ background: #B2DFDB; color: #00695C; }
+
+  /* 2. Indigo */
+  .theme-indigo .pdf-doc-header    { background: #3949AB; }
+  .theme-indigo .pdf-form-meta     { background: #E8EAF6; }
+  .theme-indigo .pdf-form-name     { color: #283593; }
+  .theme-indigo .pdf-section-header{ background: #C5CAE9; color: #283593; }
+
+  /* 3. Blue-grey (original dark) */
+  .theme-bluegrey .pdf-doc-header    { background: #37474F; }
+  .theme-bluegrey .pdf-form-meta     { background: #ECEFF1; }
+  .theme-bluegrey .pdf-form-name     { color: #263238; }
+  .theme-bluegrey .pdf-section-header{ background: #CFD8DC; color: #37474F; }
+
+  /* 4. Deep purple */
+  .theme-purple .pdf-doc-header    { background: #6A1B9A; }
+  .theme-purple .pdf-form-meta     { background: #F3E5F5; }
+  .theme-purple .pdf-form-name     { color: #4A148C; }
+  .theme-purple .pdf-section-header{ background: #E1BEE7; color: #4A148C; }
+
+  /* 5. Orange */
+  .theme-orange .pdf-doc-header    { background: #E65100; }
+  .theme-orange .pdf-form-meta     { background: #FFF3E0; }
+  .theme-orange .pdf-form-name     { color: #BF360C; }
+  .theme-orange .pdf-section-header{ background: #FFE0B2; color: #BF360C; }
+
+  /* 6. Light grey / minimal */
+  .theme-minimal .pdf-doc-header    { background: #455A64; }
+  .theme-minimal .pdf-form-meta     { background: #F5F5F5; }
+  .theme-minimal .pdf-form-name     { color: #212121; }
+  .theme-minimal .pdf-section-header{ background: #EEEEEE; color: #424242; }
+
+  /* 7. Green */
+  .theme-green .pdf-doc-header    { background: #2E7D32; }
+  .theme-green .pdf-form-meta     { background: #E8F5E9; }
+  .theme-green .pdf-form-name     { color: #1B5E20; }
+  .theme-green .pdf-section-header{ background: #C8E6C9; color: #1B5E20; }
+
+  /* 8. Navy */
+  .theme-navy .pdf-doc-header    { background: #1A237E; }
+  .theme-navy .pdf-form-meta     { background: #E8EAF6; }
+  .theme-navy .pdf-form-name     { color: #0D1560; }
+  .theme-navy .pdf-section-header{ background: #C5CAE9; color: #0D1560; }
+</style>
+</head>
+<body>
+
+<h1>PDF Header — Colour Variations</h1>
+<p class="subtitle">Pick a colour scheme for the generated PDF</p>
+
+<div class="grid">
+
+  <!-- 1. Teal -->
+  <div class="variant">
+    <div class="variant-label">Teal (current)</div>
+    <div class="pdf-page theme-teal">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Indigo -->
+  <div class="variant">
+    <div class="variant-label">Indigo</div>
+    <div class="pdf-page theme-indigo">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Blue-grey -->
+  <div class="variant">
+    <div class="variant-label">Blue-grey</div>
+    <div class="pdf-page theme-bluegrey">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Deep purple -->
+  <div class="variant">
+    <div class="variant-label">Deep Purple</div>
+    <div class="pdf-page theme-purple">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Orange -->
+  <div class="variant">
+    <div class="variant-label">Orange</div>
+    <div class="pdf-page theme-orange">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Minimal -->
+  <div class="variant">
+    <div class="variant-label">Minimal</div>
+    <div class="pdf-page theme-minimal">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Green -->
+  <div class="variant">
+    <div class="variant-label">Green</div>
+    <div class="pdf-page theme-green">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Navy -->
+  <div class="variant">
+    <div class="variant-label">Navy</div>
+    <div class="pdf-page theme-navy">
+      <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf</div>
+      <div class="pdf-doc-header">
+        <div class="pdf-doc-title">Adam D</div>
+        <div class="pdf-doc-sub">Male · 33 Years · Beed, Anjanwati</div>
+      </div>
+      <div class="pdf-form-meta">
+        <div class="pdf-form-name">Farmer Endline</div>
+        <div class="pdf-form-sub">04 Feb 2026 · Anjali Bhagabati · Unplanned</div>
+      </div>
+      <div class="pdf-body">
+        <div class="pdf-section">
+          <div class="pdf-section-header">Details</div>
+          <table class="pdf-table">
+            <tr><td>NGO Name</td><td>ABC Vikas Sanstha</td></tr>
+            <tr><td>Farm area</td><td>1 acres</td></tr>
+            <tr><td>Total silt</td><td>16.2 cu.m.</td></tr>
+          </table>
+        </div>
+        <div class="pdf-section">
+          <div class="pdf-section-header">Farmer Details</div>
+          <table class="pdf-table">
+            <tr><td>Type of ID</td><td>Ration Card</td></tr>
+            <tr><td>Category</td><td>Marginal</td></tr>
+          </table>
+        </div>
+        <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

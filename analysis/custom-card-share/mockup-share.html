@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Card — Share Feature Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 40px 24px 60px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .col-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #37474F;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+  }
+
+  .phone {
+    width: 320px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1px solid #CFD8DC;
+    position: relative;
+  }
+
+  .status-bar {
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    background: #1a1a1a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 12px;
+  }
+  .toolbar .title { font-size: 17px; font-weight: 500; }
+  .toolbar .icon { font-size: 20px; }
+
+  .screen {
+    background: #f5f5f5;
+    padding: 16px;
+    min-height: 480px;
+  }
+
+  /* ── Custom card rendered view ── */
+  .custom-card {
+    background: #FFE600;
+    border: 2.5px solid #333;
+    border-radius: 4px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 8px;
+    border-bottom: 2px solid #333;
+  }
+
+  .month-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    border: 2px solid #333;
+    padding: 6px 10px;
+    background: #FFE600;
+    font-weight: 700;
+    font-size: 15px;
+    margin-right: 10px;
+  }
+
+  .share-btn {
+    background: #1a1a1a;
+    color: #FFE600;
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .share-btn-outline {
+    background: transparent;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .total-box {
+    border-bottom: 2px solid #333;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .payment-table th, .payment-table td {
+    border: 1.5px solid #333;
+    padding: 7px 10px;
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .payment-table th {
+    font-weight: 700;
+    background: #FFE600;
+  }
+
+  .payment-table td {
+    background: #FFE600;
+  }
+
+  /* ── Share sheet overlay ── */
+  .overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.45);
+    top: 0;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .share-sheet {
+    background: #fff;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 0 28px;
+  }
+
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: #CFD8DC;
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+
+  .sheet-title {
+    font-size: 13px;
+    color: #90A4AE;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 0.3px;
+  }
+
+  .sheet-apps {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 12px 16px;
+  }
+
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #37474F;
+    font-weight: 500;
+  }
+
+  .app-icon .icon-circle {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .wa { background: #25D366; }
+  .mail { background: #EA4335; }
+  .drive { background: #4285F4; }
+  .more { background: #ECEFF1; border: 1px solid #CFD8DC; }
+
+  .sheet-divider { height: 1px; background: #ECEFF1; margin: 0 0 12px; }
+
+  .sheet-actions {
+    padding: 0 16px;
+  }
+
+  .sheet-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    font-size: 14px;
+    color: #212121;
+    border-bottom: 1px solid #F5F5F5;
+  }
+
+  .sheet-action:last-child { border-bottom: none; }
+  .sheet-action .act-icon { font-size: 20px; color: #607D8B; width: 24px; text-align: center; }
+
+  /* ── PDF preview ── */
+  .pdf-preview {
+    background: #fff;
+    border: 1px solid #CFD8DC;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pdf-body {
+    padding: 12px;
+    background: #FAFAFA;
+  }
+
+  .pdf-watermark {
+    text-align: center;
+    font-size: 10px;
+    color: #B0BEC5;
+    margin-top: 8px;
+  }
+
+  /* annotation */
+  .note {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 320px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px;
+    color: #546E7A;
+    line-height: 1.7;
+  }
+  .note strong { color: #263238; font-size: 13px; display: block; margin-bottom: 6px; }
+  .note .num { color: #00897B; font-weight: 700; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<!-- STATE 1: Card with share button in toolbar -->
+<div class="col">
+  <div class="col-title">1 — Rendered card view<br>Share icon in app toolbar</div>
+  <div class="phone">
+    <div class="status-bar"><span>8:42</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Dashboard</span>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span style="cursor:pointer; display:flex; align-items:center;" title="Share as PDF"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
+        <span class="icon">⌂</span>
+      </div>
+    </div>
+    <div class="screen">
+      <div class="custom-card">
+        <div class="card-header-row">
+          <div class="month-selector">
+            Month
+            <span>▼</span>
+          </div>
+        </div>
+        <div class="total-box">
+          Total payment for December 2025:<br>Rs. 300
+        </div>
+        <table class="payment-table">
+          <thead>
+            <tr>
+              <th>Survey date</th>
+              <th>Payment status</th>
+              <th>Transfer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>5.12.25</td><td>Approved</td><td>100</td></tr>
+            <tr><td>13.12.25</td><td>Declined – Unclear picture</td><td>0</td></tr>
+            <tr><td>22.12.25</td><td>Approved</td><td>100</td></tr>
+            <tr><td>29.12.25</td><td>Approved</td><td>100</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Share icon placement</strong>
+    The share icon sits in the Avni app toolbar — separate from the rendered HTML card. The entire yellow card (including Month filter) is the implementer's HTML view and is untouched.
+  </div>
+</div>
+
+<!-- STATE 2: Share sheet -->
+<div class="col">
+  <div class="col-title">2 — Share icon tapped<br>Android share sheet</div>
+  <div class="phone">
+    <div class="status-bar"><span>8:42</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Dashboard</span>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span style="display:flex; align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
+        <span class="icon">⌂</span>
+      </div>
+    </div>
+    <div class="screen" style="position:relative; padding:0; min-height:480px;">
+      <!-- Blurred card behind -->
+      <div style="padding:16px; filter: brightness(0.7);">
+        <div class="custom-card">
+          <div class="card-header-row">
+            <div class="month-selector">Month <span>▼</span></div>
+          </div>
+          <div class="total-box">Total payment for December 2025:<br>Rs. 300</div>
+          <table class="payment-table">
+            <thead><tr><th>Survey date</th><th>Payment status</th><th>Transfer</th></tr></thead>
+            <tbody>
+              <tr><td>5.12.25</td><td>Approved</td><td>100</td></tr>
+              <tr><td>13.12.25</td><td>Declined – Unclear picture</td><td>0</td></tr>
+              <tr><td>22.12.25</td><td>Approved</td><td>100</td></tr>
+              <tr><td>29.12.25</td><td>Approved</td><td>100</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Share sheet -->
+      <div class="overlay">
+        <div class="share-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Share PDF via</div>
+          <div class="sheet-apps">
+            <div class="app-icon">
+              <div class="icon-circle wa">💬</div>
+              <span>WhatsApp</span>
+            </div>
+            <div class="app-icon">
+              <div class="icon-circle mail">✉</div>
+              <span>Gmail</span>
+            </div>
+            <div class="app-icon">
+              <div class="icon-circle drive">△</div>
+              <span>Drive</span>
+            </div>
+            <div class="app-icon">
+              <div class="icon-circle more">•••</div>
+              <span>More</span>
+            </div>
+          </div>
+          <div class="sheet-divider"></div>
+          <div class="sheet-actions">
+            <div class="sheet-action">
+              <span class="act-icon">📋</span>
+              <span>Copy to clipboard</span>
+            </div>
+            <div class="sheet-action">
+              <span class="act-icon">💾</span>
+              <span>Save to device</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Android share sheet</strong>
+    The native OS share sheet is invoked with the PDF file attached. The user can share to WhatsApp, Gmail, Drive, or any other installed app. "Save to device" is also available via the sheet.
+  </div>
+</div>
+
+<!-- STATE 3: PDF preview -->
+<div class="col">
+  <div class="col-title">3 — What the shared PDF looks like</div>
+  <div class="phone">
+    <div class="status-bar"><span>8:42</span><span>▲▲🔋</span></div>
+    <div class="toolbar" style="background:#E53935;">
+      <span class="icon">←</span>
+      <span class="title" style="font-size:14px">payment_dec_2025.pdf</span>
+      <span class="icon" style="font-size:14px">⋮</span>
+    </div>
+    <div class="screen" style="background:#616161; padding: 12px; display:flex; align-items:flex-start; justify-content:center;">
+      <div class="pdf-preview" style="width:100%">
+        <div class="pdf-topbar">
+          📄 payment_dec_2025.pdf &nbsp;|&nbsp; Page 1 of 1
+        </div>
+        <div class="pdf-body">
+          <div class="custom-card">
+            <div class="card-header-row" style="padding:6px 8px">
+              <div class="month-selector" style="font-size:12px; padding:4px 8px;">
+                Month: December 2025 <span>▼</span>
+              </div>
+            </div>
+            <div class="total-box" style="font-size:12px; padding:7px 10px;">
+              Total payment for December 2025:<br>Rs. 300
+            </div>
+            <table class="payment-table">
+              <thead><tr><th style="font-size:11px">Survey date</th><th style="font-size:11px">Payment status</th><th style="font-size:11px">Transfer</th></tr></thead>
+              <tbody>
+                <tr><td style="font-size:11px">5.12.25</td><td style="font-size:11px">Approved</td><td style="font-size:11px">100</td></tr>
+                <tr><td style="font-size:11px">13.12.25</td><td style="font-size:11px">Declined – Unclear picture</td><td style="font-size:11px">0</td></tr>
+                <tr><td style="font-size:11px">22.12.25</td><td style="font-size:11px">Approved</td><td style="font-size:11px">100</td></tr>
+                <tr><td style="font-size:11px">29.12.25</td><td style="font-size:11px">Approved</td><td style="font-size:11px">100</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pdf-watermark">Generated by Avni · 18-04-2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>PDF output</strong>
+    The PDF is a faithful render of the custom HTML card — same layout, data, and active filter (December 2025). File is named after the card + date. A small "Generated by Avni" watermark is added at the bottom.
+  </div>
+</div>
+
+</body>
+</html>

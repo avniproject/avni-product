@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Share — PDF Mockup v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 40px 24px 60px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .col-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #37474F;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+  }
+
+  .phone {
+    width: 320px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1px solid #CFD8DC;
+  }
+
+  .status-bar {
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    background: #1a1a1a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 12px;
+  }
+  .toolbar .title { font-size: 17px; font-weight: 500; }
+
+  .screen {
+    background: #f0f0f0;
+    padding: 0;
+    min-height: 520px;
+  }
+
+  /* Subject header */
+  .subject-header {
+    background: #fff;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #ECEFF1;
+  }
+  .avatar {
+    width: 44px; height: 44px;
+    background: #E0F2F1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #00897B;
+    flex-shrink: 0;
+  }
+  .subject-name { font-size: 15px; font-weight: 700; color: #212121; }
+  .subject-id { font-size: 12px; color: #78909C; }
+  .location-btn {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    color: #00897B;
+    gap: 2px;
+  }
+
+  /* Registration details */
+  .reg-section {
+    background: #fff;
+    margin-top: 8px;
+    padding: 10px 14px;
+  }
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #90A4AE;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .reg-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .reg-text { font-size: 12px; color: #37474F; }
+  .reg-actions { display: flex; gap: 16px; }
+  .action-void { font-size: 12px; font-weight: 600; color: #E53935; }
+  .action-edit { font-size: 12px; font-weight: 600; color: #00897B; }
+
+  /* Visits section */
+  .visits-section { margin-top: 8px; padding: 10px 14px 0; }
+
+  .visit-card {
+    background: #fff;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .visit-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .visit-name { font-size: 13px; font-weight: 600; color: #212121; }
+  .visit-date { font-size: 11px; color: #90A4AE; margin-top: 1px; }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-overdue { background: #E53935; }
+  .badge-scheduled { background: #FFA000; }
+
+  .visit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+  .btn-cancel { font-size: 12px; font-weight: 600; color: #E53935; }
+  .btn-do { font-size: 12px; font-weight: 600; color: #00897B; }
+  .btn-share {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+  }
+
+  /* Share sheet overlay */
+  .overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; top: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: flex-end;
+  }
+  .share-sheet {
+    background: #fff;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 0 28px;
+  }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: #CFD8DC;
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+  .sheet-title {
+    font-size: 11px;
+    color: #90A4AE;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+  .sheet-apps {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 12px 16px;
+  }
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #37474F;
+    font-weight: 500;
+  }
+  .app-icon .icon-circle {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .wa { background: #25D366; }
+  .mail { background: #EA4335; }
+  .drive { background: #4285F4; }
+  .more { background: #ECEFF1; border: 1px solid #CFD8DC; }
+  .sheet-divider { height: 1px; background: #ECEFF1; margin: 0 0 12px; }
+  .sheet-actions { padding: 0 16px; }
+  .sheet-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    font-size: 14px;
+    color: #212121;
+  }
+  .sheet-action .act-icon { font-size: 20px; color: #607D8B; width: 24px; text-align: center; }
+
+  /* PDF */
+  .pdf-viewer {
+    background: #616161;
+    padding: 10px;
+    min-height: 520px;
+  }
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 10px;
+  }
+  .pdf-page { background: #fff; }
+  .pdf-header {
+    background: #37474F;
+    color: #fff;
+    padding: 10px 12px;
+  }
+  .pdf-header-title { font-size: 13px; font-weight: 700; }
+  .pdf-header-sub { font-size: 10px; color: #B0BEC5; margin-top: 2px; }
+  .pdf-body { padding: 10px 12px; }
+  .pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .pdf-table th {
+    background: #ECEFF1;
+    color: #546E7A;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 5px 8px;
+    text-align: left;
+    border: 1px solid #CFD8DC;
+  }
+  .pdf-table td {
+    padding: 6px 8px;
+    border: 1px solid #ECEFF1;
+    color: #212121;
+    vertical-align: top;
+  }
+  .pdf-table tr:nth-child(even) td { background: #FAFAFA; }
+  .pdf-table td:first-child { color: #607D8B; font-size: 10px; width: 45%; }
+  .pdf-watermark {
+    text-align: center;
+    font-size: 9px;
+    color: #B0BEC5;
+    margin-top: 10px;
+    border-top: 1px solid #ECEFF1;
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+
+  .note {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 320px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px;
+    color: #546E7A;
+    line-height: 1.7;
+  }
+  .note strong { color: #263238; font-size: 13px; display: block; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<!-- STATE 1: Subject profile matching actual UI + share icon -->
+<div class="col">
+  <div class="col-title">1 — Subject profile<br>Share icon alongside Cancel / Do</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span>←</span>
+      <span class="title">Dashboard</span>
+      <span>⌂</span>
+    </div>
+    <div class="screen">
+
+      <!-- Subject header -->
+      <div class="subject-header">
+        <div class="avatar">CK</div>
+        <div>
+          <div class="subject-name">Chandan Kumar</div>
+          <div class="subject-id">W03</div>
+        </div>
+        <div class="location-btn">📍<span>Location</span></div>
+      </div>
+
+      <!-- Registration details -->
+      <div class="reg-section">
+        <div class="section-title">Registration details</div>
+        <div class="reg-row">
+          <div class="reg-text">Registered on 19 Oct 2023 by Chandan Kumar</div>
+          <div style="font-size:16px; color:#90A4AE;">∨</div>
+        </div>
+        <div class="reg-actions" style="justify-content:flex-end; display:flex; margin-top:6px;">
+          <span class="action-void">Void</span>
+          <span class="action-edit">Edit</span>
+        </div>
+      </div>
+
+      <!-- Visits planned -->
+      <div class="visits-section">
+        <div class="section-title">Visits planned</div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">WIMC meeting</div>
+              <div class="visit-date">Scheduled For: 19 Oct 2023</div>
+            </div>
+            <span class="badge badge-overdue">Overdue</span>
+          </div>
+          <div class="visit-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-do">Do</span>
+            <div class="btn-share">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90A4AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">Tank Cleaning</div>
+              <div class="visit-date">Scheduled For: 19 Oct 2023</div>
+            </div>
+            <span class="badge badge-overdue">Overdue</span>
+          </div>
+          <div class="visit-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-do">Do</span>
+            <div class="btn-share">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90A4AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">Water Quality testing</div>
+              <div class="visit-date">Scheduled For: 01 May 2026</div>
+            </div>
+            <span class="badge badge-scheduled">Scheduled For</span>
+          </div>
+          <div class="visit-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-do">Do</span>
+            <div class="btn-share">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90A4AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Share icon placement</strong>
+    Share icon added alongside Cancel and Do on each visit row. Tapping it generates a PDF of that form fill and opens the Android share sheet immediately.
+  </div>
+</div>
+
+<!-- STATE 2: Share sheet -->
+<div class="col">
+  <div class="col-title">2 — Share tapped<br>Android share sheet</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span>←</span>
+      <span class="title">Dashboard</span>
+      <span>⌂</span>
+    </div>
+    <div class="screen" style="position:relative; min-height:520px; padding:0;">
+      <div style="filter:brightness(0.65); padding:0;">
+        <div class="subject-header">
+          <div class="avatar">CK</div>
+          <div><div class="subject-name">Chandan Kumar</div><div class="subject-id">W03</div></div>
+        </div>
+        <div class="visits-section">
+          <div class="section-title">Visits planned</div>
+          <div class="visit-card">
+            <div class="visit-top">
+              <div><div class="visit-name">WIMC meeting</div><div class="visit-date">Scheduled For: 19 Oct 2023</div></div>
+              <span class="badge badge-overdue">Overdue</span>
+            </div>
+            <div class="visit-actions">
+              <span class="btn-cancel">Cancel</span>
+              <span class="btn-do">Do</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90A4AE" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
+          </div>
+          <div class="visit-card">
+            <div class="visit-top">
+              <div><div class="visit-name">Tank Cleaning</div><div class="visit-date">Scheduled For: 19 Oct 2023</div></div>
+              <span class="badge badge-overdue">Overdue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay">
+        <div class="share-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Share wimc_meeting_19_10_2023.pdf via</div>
+          <div class="sheet-apps">
+            <div class="app-icon"><div class="icon-circle wa">💬</div><span>WhatsApp</span></div>
+            <div class="app-icon"><div class="icon-circle mail">✉</div><span>Gmail</span></div>
+            <div class="app-icon"><div class="icon-circle drive">△</div><span>Drive</span></div>
+            <div class="app-icon"><div class="icon-circle more">•••</div><span>More</span></div>
+          </div>
+          <div class="sheet-divider"></div>
+          <div class="sheet-actions">
+            <div class="sheet-action"><span class="act-icon">💾</span><span>Save to device</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Android share sheet</strong>
+    PDF filename shown in the sheet title. User shares via WhatsApp, Gmail, Drive, or any installed app.
+  </div>
+</div>
+
+<!-- STATE 3: PDF output -->
+<div class="col">
+  <div class="col-title">3 — PDF output<br>Portrait, table layout</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar" style="background:#E53935;">
+      <span>←</span>
+      <span class="title" style="font-size:12px;">wimc_meeting_19_10_2023.pdf</span>
+      <span>⋮</span>
+    </div>
+    <div class="pdf-viewer">
+      <div class="pdf-page">
+        <div class="pdf-topbar">📄 wimc_meeting_19_10_2023.pdf · Page 1 of 1</div>
+        <div class="pdf-header">
+          <div class="pdf-header-title">WIMC Meeting</div>
+          <div class="pdf-header-sub">Chandan Kumar (W03) · 19 Oct 2023</div>
+        </div>
+        <div class="pdf-body">
+          <table class="pdf-table">
+            <thead>
+              <tr><th>Field</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Meeting held</td><td>Yes</td></tr>
+              <tr><td>Venue</td><td>Gram Panchayat Office</td></tr>
+              <tr><td>Attendees</td><td>12</td></tr>
+              <tr><td>Agenda discussed</td><td>Water supply schedule</td></tr>
+              <tr><td>Action decided</td><td>Repair pump by 25 Oct</td></tr>
+              <tr><td>Next meeting date</td><td>19 Nov 2023</td></tr>
+              <tr><td>Remarks</td><td>Pump operator to follow up</td></tr>
+            </tbody>
+          </table>
+          <div class="pdf-watermark">Generated by Avni · Chandan Kumar · 19-10-2023 11:04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>PDF — portrait, table layout</strong>
+    Header shows form type, subject name/ID, and date. Two-column table: field label left, value right. Watermark at bottom with user name and timestamp.
+  </div>
+</div>
+
+</body>
+</html>

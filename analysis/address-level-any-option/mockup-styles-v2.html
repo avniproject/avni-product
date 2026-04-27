@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Any Option – Style Comparison</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 32px 24px 48px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #263238;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #78909C;
+    margin-bottom: 32px;
+  }
+
+  .row {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 300px;
+  }
+
+  .col-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #37474F;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap-8px;
+  }
+
+  .badge-recommended {
+    display: inline-block;
+    background: #00897B;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin-left: 8px;
+    letter-spacing: 0.4px;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 300px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+    border: 1px solid #CFD8DC;
+  }
+
+  .toolbar {
+    background: #212121;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 12px;
+  }
+  .toolbar .title { font-size: 16px; font-weight: 500; }
+  .toolbar .icon { font-size: 18px; }
+
+  .content {
+    padding: 0 0 20px;
+    background: #fafafa;
+  }
+
+  .section-label {
+    font-size: 11px;
+    color: #90A4AE;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 10px 14px 4px;
+    text-transform: uppercase;
+  }
+
+  .address-block {
+    border: 1.5px dashed #B0BEC5;
+    margin: 0 10px;
+    border-radius: 4px;
+    padding: 8px 10px 10px;
+  }
+
+  .divider { height: 1px; background: #ECEFF1; margin: 8px 0; }
+
+  .level-label {
+    font-size: 12px;
+    color: #607D8B;
+    margin-bottom: 6px;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 6px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 2px 0;
+    font-size: 13px;
+    color: #212121;
+  }
+
+  .radio {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid #B0BEC5;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .radio.selected { border-color: #00897B; }
+  .radio.selected::after {
+    content: '';
+    width: 9px; height: 9px;
+    background: #00897B;
+    border-radius: 50%;
+  }
+
+  /* ── STYLE 1: Chip ── */
+  .level-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 6px;
+    margin-top: 2px;
+  }
+  .chip {
+    background: #E0F2F1;
+    color: #00897B;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 3px 10px;
+    border: 1.5px solid #80CBC4;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+  .chip.active {
+    background: #00695C;
+    color: #fff;
+    border-color: #00695C;
+  }
+
+  /* ── STYLE 2: Toggle ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    margin-top: 2px;
+  }
+  .toggle-label-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .toggle-sublabel {
+    font-size: 10px;
+    color: #90A4AE;
+    margin-top: 1px;
+  }
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .toggle-text {
+    font-size: 11px;
+    color: #00897B;
+    font-weight: 600;
+  }
+  .toggle {
+    width: 32px; height: 18px;
+    background: #00897B;
+    border-radius: 9px;
+    position: relative;
+  }
+  .toggle::after {
+    content: '';
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; right: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .toggle.off {
+    background: #CFD8DC;
+  }
+  .toggle.off::after { right: auto; left: 2px; }
+
+  /* greyed options when toggle is ON */
+  .option.dimmed { opacity: 0.35; }
+
+  /* ── STYLE 3: Text link ── */
+  .textlink-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    margin-top: 2px;
+  }
+  .text-link {
+    font-size: 11px;
+    color: #00897B;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Annotation cards */
+  .annotation {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 300px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px;
+    color: #546E7A;
+    line-height: 1.6;
+  }
+  .annotation strong { color: #263238; font-size: 13px; display: block; margin-bottom: 6px; }
+  .pro { color: #2E7D32; }
+  .con { color: #C62828; }
+</style>
+</head>
+<body>
+
+<h1>Address Level — "Any" Option Styles</h1>
+<p class="subtitle">Showing Block level only for comparison. Same pattern repeats for Village.</p>
+
+<div class="row">
+
+  <!-- ── STYLE 1: CHIP ── -->
+  <div class="col">
+    <div class="col-title">
+      Style 1 — Chip <span class="badge-recommended">Recommended</span>
+    </div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <!-- Block with CHIP -->
+          <div class="level-header">
+            <span class="level-label" style="margin:0">Block</span>
+            <span class="chip">Show all next level addresses</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-header">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <span class="chip">Show all next level addresses</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Chip — Active state -->
+    <div style="font-size:11px; color:#78909C; text-align:center; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">↓ Chip tapped — next level revealed</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-header">
+            <span class="level-label" style="margin:0">Block</span>
+            <span class="chip active">Show all next level addresses</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-header">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <span class="chip">Show all next level addresses</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chip — Collapsed state (tapped active chip) -->
+    <div style="font-size:11px; color:#78909C; text-align:center; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">↓ Active chip tapped again — next levels hidden</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-header">
+            <span class="level-label" style="margin:0">Block</span>
+            <span class="chip">Show all next level addresses</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>Chip / Pill</strong>
+      <span class="pro">✓ Compact — doesn't add a row</span><br>
+      <span class="pro">✓ Visually distinct from options</span><br>
+      <span class="pro">✓ Active state (darker chip) is clear</span><br>
+      <span class="pro">✓ Tapping active chip collapses levels below</span><br>
+      <span class="con">✗ Small tap target on mobile</span><br>
+      <span class="con">✗ May be missed by first-time users</span>
+    </div>
+  </div>
+
+  <!-- ── STYLE 2: TOGGLE ── -->
+  <div class="col">
+    <div class="col-title">Style 2 — Toggle Switch</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <!-- Block with TOGGLE OFF -->
+          <div class="toggle-row">
+            <div class="toggle-label-group">
+              <span class="level-label" style="margin:0">Block</span>
+            </div>
+            <div class="toggle-wrap">
+              <span class="toggle-text" style="color:#B0BEC5">Any</span>
+              <div class="toggle off"></div>
+            </div>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="toggle-row">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <div class="toggle-wrap">
+              <span class="toggle-text" style="color:#B0BEC5">Any</span>
+              <div class="toggle off"></div>
+            </div>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle — ON state -->
+    <div style="font-size:11px; color:#78909C; text-align:center; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">↓ When toggle is ON</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="toggle-row">
+            <span class="level-label" style="margin:0">Block</span>
+            <div class="toggle-wrap">
+              <span class="toggle-text">Any</span>
+              <div class="toggle"></div>
+            </div>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="toggle-row">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <div class="toggle-wrap">
+              <span class="toggle-text" style="color:#B0BEC5">Any</span>
+              <div class="toggle off"></div>
+            </div>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>Toggle Switch</strong>
+      <span class="pro">✓ Familiar on/off metaphor</span><br>
+      <span class="pro">✓ Large tap target, easy to hit</span><br>
+      <span class="pro">✓ State is very obvious</span><br>
+      <span class="con">✗ Toggle = setting, not a value — can feel conceptually off</span><br>
+      <span class="con">✗ Slightly heavier visual weight</span>
+    </div>
+  </div>
+
+  <!-- ── STYLE 3: TEXT LINK ── -->
+  <div class="col">
+    <div class="col-title">Style 3 — Text Link</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <!-- Block with TEXT LINK -->
+          <div class="textlink-row">
+            <span class="level-label" style="margin:0">Block</span>
+            <span class="text-link">Select Any</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="textlink-row">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <span class="text-link">Select Any</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text link — selected state -->
+    <div style="font-size:11px; color:#78909C; text-align:center; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">↓ When "Select Any" is tapped</div>
+    <div class="phone">
+      <div class="toolbar">
+        <span class="icon">←</span>
+        <span class="title">Individual Registration</span>
+        <span class="icon">⌂</span>
+      </div>
+      <div class="content">
+        <div class="section-label">Address <span style="color:#EF5350">*</span></div>
+        <div class="address-block">
+
+          <div class="level-label">District</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="textlink-row">
+            <span class="level-label" style="margin:0">Block</span>
+            <span class="text-link" style="color:#00695C; text-decoration:none; font-weight:700">✓ Any selected — clear</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Anuppur</span></div>
+            <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+            <div class="option"><div class="radio"></div><span>Kotma</span></div>
+            <div class="option"><div class="radio"></div><span>No location</span></div>
+            <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="textlink-row">
+            <span class="level-label" style="margin:0">Health and Wellness Center</span>
+            <span class="text-link">Select Any</span>
+          </div>
+          <div class="options-grid">
+            <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+            <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="level-label">Village</div>
+          <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:4px">
+            <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <strong>Text Link</strong>
+      <span class="pro">✓ Most unobtrusive — clean UI</span><br>
+      <span class="pro">✓ No added visual weight</span><br>
+      <span class="con">✗ Very easy to miss</span><br>
+      <span class="con">✗ "Clear" vs "Select Any" state needs careful wording</span><br>
+      <span class="con">✗ Small tap target</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

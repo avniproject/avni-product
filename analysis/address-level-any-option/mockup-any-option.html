@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Address Level – Any Option Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e0e0e0;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 24px;
+    font-family: 'Roboto', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .phone {
+    width: 360px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    border: 1px solid #ccc;
+  }
+
+  .status-bar {
+    background: #212121;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .toolbar {
+    background: #212121;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 14px;
+  }
+
+  .toolbar .title { font-size: 18px; font-weight: 500; }
+  .toolbar .icon { font-size: 20px; cursor: pointer; }
+
+  .content {
+    background: #fafafa;
+    padding: 0 0 24px 0;
+    overflow-y: auto;
+    max-height: 680px;
+  }
+
+  .other-row {
+    background: #fff;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 12px;
+  }
+
+  .section-label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    padding: 8px 16px 4px;
+    text-transform: uppercase;
+  }
+
+  .address-block {
+    border: 1.5px dashed #bbb;
+    margin: 4px 12px 0;
+    border-radius: 4px;
+    padding: 8px 12px 10px;
+  }
+
+  .level-label {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 8px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 14px;
+    color: #212121;
+    cursor: pointer;
+  }
+
+  /* Custom radio */
+  .radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #bbb;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .radio.selected { border-color: #00897B; }
+  .radio.selected::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #00897B;
+    border-radius: 50%;
+  }
+
+  /* "Any" option styling */
+  .option.any-option .radio { border-color: #00897B; }
+  .option.any-option .option-label {
+    color: #00897B;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .option.any-option.selected-any .radio { border-color: #00897B; }
+  .option.any-option.selected-any .radio::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #00897B;
+    border-radius: 50%;
+  }
+
+  .divider { height: 1px; background: #eee; margin: 10px 0; }
+
+  .label { display: flex; flex-direction: column; }
+  .caption { font-size: 10px; color: #aaa; margin-top: 1px; }
+
+  /* Legend */
+  .legend {
+    width: 360px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    align-self: flex-start;
+  }
+  .legend h3 { font-size: 15px; font-weight: 600; color: #212121; margin-bottom: 12px; }
+  .legend-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 13px; color: #444; line-height: 1.5; }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 3px;
+  }
+  .dot-teal { background: #00897B; }
+  .dot-grey { background: #bbb; }
+  .dot-outline { border: 2px solid #00897B; background: transparent; width: 10px; height: 10px; }
+
+  .tag {
+    display: inline-block;
+    background: #E0F2F1;
+    color: #00695C;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .phone-title {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- BEFORE -->
+<div>
+  <div class="phone-title">Before</div>
+  <div class="phone">
+    <div class="status-bar">
+      <span>4:04</span>
+      <span>▲▲</span>
+    </div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Individual Registration</span>
+      <span class="icon">⌂</span>
+    </div>
+    <div class="content">
+      <div class="other-row">
+        <div class="radio"></div>
+        <span style="font-size:15px">Other</span>
+      </div>
+
+      <div class="section-label">Address <span style="color:#c0392b">*</span></div>
+
+      <div class="address-block">
+
+        <!-- District -->
+        <div class="level-label">District</div>
+        <div class="options-grid" style="grid-template-columns:1fr">
+          <div class="option">
+            <div class="radio selected"></div>
+            <span class="option-label">Anuppur</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- Block -->
+        <div class="level-label">Block</div>
+        <div class="options-grid">
+          <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+          <div class="option"><div class="radio"></div><span>Kotma</span></div>
+          <div class="option"><div class="radio"></div><span>No location</span></div>
+          <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- Village -->
+        <div class="level-label">Village</div>
+        <div class="options-grid" style="grid-template-columns:1fr">
+          <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- HWC -->
+        <div class="level-label">Health and Wellness Center</div>
+        <div class="options-grid">
+          <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bamhani2 HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Banka HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Barbaspur Mgn HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bargawan HWC</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AFTER -->
+<div>
+  <div class="phone-title">After – Any option added</div>
+  <div class="phone">
+    <div class="status-bar">
+      <span>4:04</span>
+      <span>▲▲</span>
+    </div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Individual Registration</span>
+      <span class="icon">⌂</span>
+    </div>
+    <div class="content">
+      <div class="other-row">
+        <div class="radio"></div>
+        <span style="font-size:15px">Other</span>
+      </div>
+
+      <div class="section-label">Address <span style="color:#c0392b">*</span></div>
+
+      <div class="address-block">
+
+        <!-- District -->
+        <div class="level-label">District</div>
+        <div class="options-grid" style="grid-template-columns:1fr">
+          <div class="option">
+            <div class="radio selected"></div>
+            <span>Anuppur</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- Block — Any added -->
+        <div class="level-label">Block</div>
+        <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:6px">
+          <div class="option any-option">
+            <div class="radio" style="border-color:#00897B"></div>
+            <div class="label">
+              <span class="option-label" style="color:#00897B; font-weight:600">Any</span>
+              <span class="caption">Include all blocks</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:1px; background:#e8e8e8; margin: 0 0 6px"></div>
+        <div class="options-grid">
+          <div class="option"><div class="radio selected"></div><span>Anuppur</span></div>
+          <div class="option"><div class="radio"></div><span>Jaithari</span></div>
+          <div class="option"><div class="radio"></div><span>Kotma</span></div>
+          <div class="option"><div class="radio"></div><span>No location</span></div>
+          <div class="option"><div class="radio"></div><span>Pushparajgarh</span></div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- Village — Any added -->
+        <div class="level-label">Village</div>
+        <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:6px">
+          <div class="option any-option">
+            <div class="radio" style="border-color:#00897B"></div>
+            <div class="label">
+              <span class="option-label" style="color:#00897B; font-weight:600">Any</span>
+              <span class="caption">Include all villages</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:1px; background:#e8e8e8; margin: 0 0 6px"></div>
+        <div class="options-grid" style="grid-template-columns:1fr">
+          <div class="option"><div class="radio"></div><span>Other (Anuppur)</span></div>
+        </div>
+        <div class="divider"></div>
+
+        <!-- HWC — lowest level, no Any -->
+        <div class="level-label">Health and Wellness Center</div>
+        <div class="options-grid">
+          <div class="option"><div class="radio"></div><span>Amalai HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Anuppur HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bairi Bandh HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bakeli Mgn HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bamhani2 HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Banka HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Barbaspur Mgn HWC</span></div>
+          <div class="option"><div class="radio"></div><span>Bargawan HWC</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <h3>Design notes</h3>
+  <div class="legend-item">
+    <div class="legend-dot dot-teal"></div>
+    <div><strong>"Any" appears at the top</strong> of each non-lowest level (Block, Village), separated from the specific options by a thin divider.</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot dot-outline"></div>
+    <div><strong>Teal outline radio</strong> distinguishes "Any" visually. A subtle caption ("Include all blocks") clarifies intent.</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot dot-grey"></div>
+    <div><strong>HWC level has no "Any"</strong> — it is the lowest level in the hierarchy, so the option is not shown.</div>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot dot-teal"></div>
+    <div>Selecting <strong>"Any"</strong> at Block would deselect all specific blocks and pass a wildcard to the query — the Village list would still appear below.</div>
+  </div>
+</div>
+
+</body>
+</html>

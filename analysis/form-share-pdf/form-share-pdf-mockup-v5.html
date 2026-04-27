@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Share — Android Phone Mockup v5</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 40px 24px 60px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .col-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #37474F;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+  }
+
+  .phone {
+    width: 320px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1px solid #CFD8DC;
+  }
+
+  .status-bar {
+    background: #1C2B36;
+    color: #fff;
+    font-size: 11px;
+    padding: 5px 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    background: #1C2B36;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 14px;
+  }
+  .toolbar .title { font-size: 16px; font-weight: 600; }
+  .toolbar .icon { font-size: 18px; }
+
+  .screen {
+    background: #F5F5F5;
+    min-height: 560px;
+  }
+
+  /* Subject header */
+  .subject-header {
+    background: #fff;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .avatar {
+    width: 46px; height: 46px;
+    background: #ECEFF1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #546E7A;
+    flex-shrink: 0;
+  }
+  .subject-name { font-size: 16px; font-weight: 700; color: #212121; }
+  .subject-id { font-size: 12px; color: #90A4AE; margin-top: 1px; }
+  .location-btn {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    color: #546E7A;
+    gap: 3px;
+    font-weight: 500;
+  }
+
+  /* Section block */
+  .section-block {
+    background: #fff;
+    margin-top: 10px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid #F5F5F5;
+  }
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #78909C;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .chevron { font-size: 14px; color: #90A4AE; }
+
+  /* Registration card */
+  .reg-card {
+    margin: 8px 10px;
+    background: #F5F5F5;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .reg-text { font-size: 12px; color: #37474F; line-height: 1.5; }
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-top: 12px;
+  }
+  .btn-void   { font-size: 12px; font-weight: 600; color: #E53935; }
+  .btn-share  { font-size: 12px; font-weight: 600; color: #00897B; }
+  .btn-edit   { font-size: 12px; font-weight: 600; color: #00897B; }
+  .btn-cancel { font-size: 12px; font-weight: 600; color: #E53935; }
+  .btn-do     { font-size: 12px; font-weight: 600; color: #00897B; }
+
+  /* Visit card */
+  .visit-card {
+    margin: 0 10px 8px;
+    background: #F5F5F5;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .visit-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .visit-name { font-size: 13px; font-weight: 700; color: #212121; }
+  .visit-date { font-size: 11px; color: #78909C; margin-top: 2px; }
+  .badge-overdue {
+    background: #E53935;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-scheduled {
+    background: #FFA000;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Share sheet overlay */
+  .overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; top: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: flex-end;
+  }
+  .share-sheet {
+    background: #fff;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 0 28px;
+  }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: #CFD8DC;
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+  .sheet-title {
+    font-size: 11px;
+    color: #90A4AE;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+  .sheet-apps {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 12px 16px;
+  }
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #37474F;
+    font-weight: 500;
+  }
+  .app-icon .icon-circle {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .wa { background: #25D366; }
+  .mail { background: #EA4335; }
+  .drive { background: #4285F4; }
+  .more { background: #ECEFF1; border: 1px solid #CFD8DC; }
+  .sheet-divider { height: 1px; background: #ECEFF1; margin: 0 0 10px; }
+  .sheet-actions { padding: 0 16px; }
+  .sheet-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 4px;
+    font-size: 13px;
+    color: #212121;
+  }
+  .act-icon { font-size: 18px; color: #607D8B; width: 24px; text-align: center; }
+
+  /* PDF viewer */
+  .pdf-viewer {
+    background: #616161;
+    padding: 10px;
+    min-height: 560px;
+  }
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 10px;
+  }
+  .pdf-page { background: #fff; }
+  .pdf-doc-header {
+    background: #37474F;
+    color: #fff;
+    padding: 10px 12px;
+  }
+  .pdf-doc-title { font-size: 13px; font-weight: 700; }
+  .pdf-doc-sub { font-size: 10px; color: #B0BEC5; margin-top: 2px; }
+  .pdf-body { padding: 10px 12px; }
+  .pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .pdf-table th {
+    background: #ECEFF1;
+    color: #546E7A;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 5px 8px;
+    text-align: left;
+    border: 1px solid #CFD8DC;
+  }
+  .pdf-table td {
+    padding: 6px 8px;
+    border: 1px solid #ECEFF1;
+    color: #212121;
+    vertical-align: top;
+  }
+  .pdf-table tr:nth-child(even) td { background: #FAFAFA; }
+  .pdf-table td:first-child { color: #607D8B; font-size: 10px; width: 45%; }
+  .pdf-watermark {
+    text-align: center;
+    font-size: 9px;
+    color: #B0BEC5;
+    margin-top: 10px;
+    border-top: 1px solid #ECEFF1;
+    padding-top: 6px;
+  }
+
+  .note {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 320px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px;
+    color: #546E7A;
+    line-height: 1.7;
+  }
+  .note strong { color: #263238; font-size: 13px; display: block; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<!-- STATE 1: Subject profile with Share -->
+<div class="col">
+  <div class="col-title">1 — Subject profile<br>Share as text action</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Dashboard</span>
+      <span class="icon">🏠</span>
+    </div>
+    <div class="screen">
+
+      <!-- Subject header -->
+      <div class="subject-header">
+        <div class="avatar">CK</div>
+        <div>
+          <div class="subject-name">Chandan Kumar</div>
+          <div class="subject-id">W03</div>
+        </div>
+        <div class="location-btn">📍<span>Location</span></div>
+      </div>
+
+      <!-- Registration Details -->
+      <div class="section-block">
+        <div class="section-header">
+          <span class="section-title">Registration Details</span>
+          <span class="chevron">∧</span>
+        </div>
+        <div class="reg-card">
+          <div class="reg-text">Registered on 19 Oct 2023 by Chandan Kumar</div>
+          <div class="card-actions">
+            <span class="btn-void">Void</span>
+            <span class="btn-share">Share</span>
+            <span class="btn-edit">Edit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visits Planned -->
+      <div class="section-block">
+        <div class="section-header">
+          <span class="section-title">Visits Planned</span>
+        </div>
+
+        <div style="height:8px;"></div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">WIMC meeting</div>
+              <div class="visit-date">Scheduled For: 19 Oct 2023</div>
+            </div>
+            <span class="badge-overdue">Overdue</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-share">Share</span>
+            <span class="btn-do">Do</span>
+          </div>
+        </div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">Tank Cleaning</div>
+              <div class="visit-date">Scheduled For: 19 Oct 2023</div>
+            </div>
+            <span class="badge-overdue">Overdue</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-share">Share</span>
+            <span class="btn-do">Do</span>
+          </div>
+        </div>
+
+        <div class="visit-card">
+          <div class="visit-top">
+            <div>
+              <div class="visit-name">Water Quality testing</div>
+              <div class="visit-date">Scheduled For: 01 May 2026</div>
+            </div>
+            <span class="badge-scheduled">Scheduled For</span>
+          </div>
+          <div class="card-actions">
+            <span class="btn-cancel">Cancel</span>
+            <span class="btn-share">Share</span>
+            <span class="btn-do">Do</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Share as text action</strong>
+    "Share" sits between Cancel and Do — consistent with how Void/Edit appear on Registration Details. Tapping Share generates the PDF and opens the Android share sheet.
+  </div>
+</div>
+
+<!-- STATE 2: Share sheet -->
+<div class="col">
+  <div class="col-title">2 — Share tapped<br>Android share sheet</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Dashboard</span>
+      <span class="icon">🏠</span>
+    </div>
+    <div class="screen" style="position:relative; min-height:560px;">
+      <div style="filter:brightness(0.6);">
+        <div class="subject-header">
+          <div class="avatar">CK</div>
+          <div><div class="subject-name">Chandan Kumar</div><div class="subject-id">W03</div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header">
+            <span class="section-title">Visits Planned</span>
+          </div>
+          <div style="height:8px;"></div>
+          <div class="visit-card">
+            <div class="visit-top">
+              <div><div class="visit-name">WIMC meeting</div><div class="visit-date">Scheduled For: 19 Oct 2023</div></div>
+              <span class="badge-overdue">Overdue</span>
+            </div>
+            <div class="card-actions">
+              <span class="btn-cancel">Cancel</span>
+              <span class="btn-share">Share</span>
+              <span class="btn-do">Do</span>
+            </div>
+          </div>
+          <div class="visit-card">
+            <div class="visit-top">
+              <div><div class="visit-name">Tank Cleaning</div><div class="visit-date">Scheduled For: 19 Oct 2023</div></div>
+              <span class="badge-overdue">Overdue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay">
+        <div class="share-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Share wimc_meeting_19_10_2023.pdf via</div>
+          <div class="sheet-apps">
+            <div class="app-icon"><div class="icon-circle wa">💬</div><span>WhatsApp</span></div>
+            <div class="app-icon"><div class="icon-circle mail">✉</div><span>Gmail</span></div>
+            <div class="app-icon"><div class="icon-circle drive">△</div><span>Drive</span></div>
+            <div class="app-icon"><div class="icon-circle more">•••</div><span>More</span></div>
+          </div>
+          <div class="sheet-divider"></div>
+          <div class="sheet-actions">
+            <div class="sheet-action"><span class="act-icon">💾</span><span>Save to device</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Android share sheet</strong>
+    PDF filename shown in the sheet title. User shares via WhatsApp, Gmail, Drive, or any installed app.
+  </div>
+</div>
+
+<!-- STATE 3: PDF output — mirrors expanded form view -->
+<div class="col">
+  <div class="col-title">3 — PDF output<br>Mirrors expanded form view</div>
+  <div class="phone">
+    <div class="status-bar"><span>11:05</span><span>▲▲🔋</span></div>
+    <div class="toolbar" style="background:#E53935;">
+      <span class="icon">←</span>
+      <span class="title" style="font-size:12px;">farmer_endline_04_02_2026.pdf</span>
+      <span style="font-size:18px;">⋮</span>
+    </div>
+    <div class="pdf-viewer">
+      <div class="pdf-page">
+        <div class="pdf-topbar">📄 farmer_endline_04_02_2026.pdf · Page 1 of 1</div>
+
+        <!-- Form header -->
+        <div class="pdf-doc-header">
+          <div class="pdf-doc-title">Farmer Endline</div>
+          <div class="pdf-doc-sub">Visit Date: 04 Feb 2026 by Anjali Bhagabati · Unplanned Visit</div>
+        </div>
+
+        <div class="pdf-body" style="padding:8px 10px;">
+
+          <!-- Section: Details -->
+          <table class="pdf-table" style="margin-bottom:6px;">
+            <thead>
+              <tr><th colspan="2" style="background:#CFD8DC; color:#37474F; font-size:10px; letter-spacing:0.3px;">Details</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>NGO Name</td><td>Shakuntala Bahuuddeshiy Vikas Sanstha, Dokewadi</td></tr>
+              <tr><td>Total farm area (silt spread)</td><td>1 acres</td></tr>
+              <tr><td>Cost for carting silt (INR)</td><td>1</td></tr>
+              <tr><td>Total silt excavated</td><td>16.2 cu.m.</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Section: Farmer Details -->
+          <table class="pdf-table" style="margin-bottom:6px;">
+            <thead>
+              <tr><th colspan="2" style="background:#CFD8DC; color:#37474F; font-size:10px; letter-spacing:0.3px;">Farmer Details</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Village of farmer</td><td>121</td></tr>
+              <tr><td>Type of ID</td><td>Ration Card</td></tr>
+              <tr><td>ID card number</td><td>12212</td></tr>
+              <tr><td>Distance from waterbody</td><td>0-1 Km</td></tr>
+              <tr><td>Category of farmer</td><td>Marginal: 0-2.47 acres</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Section: Other Details -->
+          <table class="pdf-table" style="margin-bottom:6px;">
+            <thead>
+              <tr><th colspan="2" style="background:#CFD8DC; color:#37474F; font-size:10px; letter-spacing:0.3px;">Other Details</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Type of land</td><td>Barren</td></tr>
+              <tr><td>Major crops grown</td><td>Paddy, Maize, Soybean, Wheat, Cotton</td></tr>
+              <tr><td>Crops where silt spread</td><td>Paddy (Rice)</td></tr>
+            </tbody>
+          </table>
+
+          <div class="pdf-watermark">Generated by Avni · Anjali Bhagabati · 04-02-2026 11:04</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>PDF mirrors expanded form view</strong>
+    Same section headers (Details, Farmer Details, Other Details) and field | value table format as the app. Edit buttons are omitted. Watermark at the bottom.
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,12 +1,19 @@
+---
+name: analyse
+description: "Use this skill when the user wants to analyse a feature request, gap, or user need in the Avni platform. Triggers include: 'analyse <feature>', 'do an analysis of', 'write an analysis for', 'create an analysis document', or any request to understand the current state and scope of an Avni feature before speccing or implementation."
+---
+
+# Avni Feature Analysis
+
 You are helping a product analyst create an initial analysis document for a feature request, gap, or user need in the Avni platform.
 
-Given the feature name or problem description in $ARGUMENTS (ask if empty):
+Given the feature name or problem description provided by the user (ask if not given):
 
 ---
 
 ## Step 1 — Clarify the request if vague
 
-If $ARGUMENTS is empty or too vague, ask:
+If no feature or problem has been described, or it is too vague, ask:
 1. What is the feature or problem? (1–2 sentences)
 2. Who is affected? (field workers, implementers, org admins, developers)
 3. Is this about a new Avni capability, a gap in an existing feature, or a workflow improvement?
@@ -22,21 +29,17 @@ Wait for answers before continuing.
 - Note what already exists vs. what is missing
 
 ### Step 2a — Read relevant Avni documentation
-1. Start at https://avni.readme.io/docs/getting-started
-2. Read the page fully
-3. Extract ALL links that point to `avni.readme.io/docs/*`
-4. Follow each link and read that page fully
-5. From each new page, again extract all `avni.readme.io/docs/*` links
-6. Continue until no new unvisited pages remain
-7. Build a mental map of what Avni currently supports before proceeding
+1. Go through avni_README.md and understand the Avni features
+2. Continue until you have a solid understanding of what Avni currently supports in this area
+3. Build a mental map of what Avni currently supports before proceeding
 
 ### Step 2b — Explore relevant repositories
-After reading the docs, check source code of below repos in ../projects in:
-- avni-server (backend, data model)
-- avni-client (Android app)
-- avni-webapp (admin UI)
-- avni-models (shared domain model)
-- avni-etl (reporting pipeline)
+After reading the docs, check source code in the sibling repos (at the same level as `avni-product`):
+- `../avni-server` (backend, data model)
+- `../avni-client` (Android app)
+- `../avni-webapp` (admin UI)
+- `../avni-models` (shared domain model)
+- `../avni-etl` (reporting pipeline)
 
 ---
 
@@ -54,8 +57,9 @@ Wait for answers before continuing.
 
 ## Step 4 — Create the analysis document
 
-Derive a slug from the feature name (lowercase, hyphens). Create `analysis/<slug>/` and write `analysis/<slug>/<slug>.md`.
-Follow INVEST principles.
+Derive a slug from the feature name (lowercase, hyphens). Create `analysis/<slug>/` inside the `avni-product` workspace and write `analysis/<slug>/<slug>.md`.
+
+Follow INVEST principles when framing the feature.
 
 ---
 
@@ -66,8 +70,8 @@ Why this feature is needed, what problem it solves, and for whom. Include real-w
 What Avni currently does in this area. Reference specific files or code patterns where relevant.
 
 ### The feature
-What needs to be built or changed. Enumerate user-facing behaviours. 
-Dont add any technical details. Refer github cards(release 15.x,16.x) in repos(avni-client, avni-server) where technical details are separated out clearly.
+What needs to be built or changed. Enumerate user-facing behaviours.
+Do not add technical implementation details here. Reference GitHub cards (releases 15.x, 16.x) in `avni-client` and `avni-server` repos where technical details are tracked separately.
 
 ### Out of scope
 What is explicitly excluded from this feature.

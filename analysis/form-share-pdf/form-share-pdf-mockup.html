@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Share — PDF Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ECEFF1;
+    font-family: 'Roboto', sans-serif;
+    padding: 40px 24px 60px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .col-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #37474F;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+  }
+
+  .phone {
+    width: 320px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1px solid #CFD8DC;
+  }
+
+  .status-bar {
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .toolbar {
+    background: #1a1a1a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 12px;
+  }
+  .toolbar .title { font-size: 17px; font-weight: 500; }
+  .toolbar .icon { font-size: 20px; }
+
+  .screen {
+    background: #f5f5f5;
+    padding: 12px;
+    min-height: 480px;
+  }
+
+  /* Subject header card */
+  .subject-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .subject-name { font-size: 15px; font-weight: 700; color: #212121; }
+  .subject-meta { font-size: 12px; color: #78909C; margin-top: 2px; }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    color: #90A4AE;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    padding-left: 2px;
+  }
+
+  /* Form fill row */
+  .form-row {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .form-row-info { flex: 1; }
+  .form-type { font-size: 13px; font-weight: 600; color: #212121; }
+  .form-date { font-size: 11px; color: #90A4AE; margin-top: 2px; }
+
+  /* Share icon */
+  .share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    cursor: pointer;
+  }
+
+  /* Share sheet overlay */
+  .overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; top: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: flex-end;
+  }
+  .share-sheet {
+    background: #fff;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 16px 0 28px;
+  }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: #CFD8DC;
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+  .sheet-title {
+    font-size: 13px;
+    color: #90A4AE;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .sheet-apps {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 12px 16px;
+  }
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #37474F;
+    font-weight: 500;
+  }
+  .app-icon .icon-circle {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .wa { background: #25D366; }
+  .mail { background: #EA4335; }
+  .drive { background: #4285F4; }
+  .more { background: #ECEFF1; border: 1px solid #CFD8DC; }
+  .sheet-divider { height: 1px; background: #ECEFF1; margin: 0 0 12px; }
+  .sheet-actions { padding: 0 16px; }
+  .sheet-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    font-size: 14px;
+    color: #212121;
+    border-bottom: 1px solid #F5F5F5;
+  }
+  .sheet-action:last-child { border-bottom: none; }
+  .sheet-action .act-icon { font-size: 20px; color: #607D8B; width: 24px; text-align: center; }
+
+  /* PDF preview */
+  .pdf-viewer {
+    background: #616161;
+    padding: 10px;
+    min-height: 480px;
+  }
+  .pdf-topbar {
+    background: #E53935;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+  }
+  .pdf-page {
+    background: #fff;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .pdf-header {
+    background: #37474F;
+    color: #fff;
+    padding: 10px 12px;
+  }
+  .pdf-header-title { font-size: 13px; font-weight: 700; }
+  .pdf-header-sub { font-size: 10px; color: #B0BEC5; margin-top: 2px; }
+  .pdf-body { padding: 10px 12px; }
+
+  .pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .pdf-table th {
+    background: #ECEFF1;
+    color: #546E7A;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 5px 8px;
+    text-align: left;
+    border: 1px solid #CFD8DC;
+  }
+  .pdf-table td {
+    padding: 6px 8px;
+    border: 1px solid #ECEFF1;
+    color: #212121;
+    vertical-align: top;
+  }
+  .pdf-table tr:nth-child(even) td { background: #FAFAFA; }
+  .pdf-table td:first-child { color: #607D8B; font-size: 10px; width: 45%; }
+
+  .pdf-watermark {
+    text-align: center;
+    font-size: 9px;
+    color: #B0BEC5;
+    margin-top: 10px;
+    padding-bottom: 4px;
+    border-top: 1px solid #ECEFF1;
+    padding-top: 6px;
+  }
+
+  .note {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 320px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 12px;
+    color: #546E7A;
+    line-height: 1.7;
+  }
+  .note strong { color: #263238; font-size: 13px; display: block; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<!-- STATE 1: Subject profile — form fills list with share icons -->
+<div class="col">
+  <div class="col-title">1 — Subject profile<br>Share icon on each form fill row</div>
+  <div class="phone">
+    <div class="status-bar"><span>9:15</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Raju Kumar</span>
+      <span class="icon">⋮</span>
+    </div>
+    <div class="screen">
+      <div class="subject-card">
+        <div class="subject-name">Raju Kumar</div>
+        <div class="subject-meta">Male · 34 yrs · Anuppur Block</div>
+      </div>
+
+      <div class="section-label">Form fills</div>
+
+      <div class="form-row">
+        <div class="form-row-info">
+          <div class="form-type">Lab Result</div>
+          <div class="form-date">05 Dec 2025</div>
+        </div>
+        <div class="share-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#607D8B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-row-info">
+          <div class="form-type">Follow-up Visit</div>
+          <div class="form-date">22 Nov 2025</div>
+        </div>
+        <div class="share-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#607D8B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-row-info">
+          <div class="form-type">Registration</div>
+          <div class="form-date">10 Oct 2025</div>
+        </div>
+        <div class="share-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#607D8B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Share icon on each row</strong>
+    Android share icon on every form fill. Tapping triggers PDF generation and immediately opens the share sheet — no intermediate screen.
+  </div>
+</div>
+
+<!-- STATE 2: Share sheet -->
+<div class="col">
+  <div class="col-title">2 — Share icon tapped<br>Android share sheet</div>
+  <div class="phone">
+    <div class="status-bar"><span>9:15</span><span>▲▲🔋</span></div>
+    <div class="toolbar">
+      <span class="icon">←</span>
+      <span class="title">Raju Kumar</span>
+      <span class="icon">⋮</span>
+    </div>
+    <div class="screen" style="position:relative; padding:0; min-height:480px;">
+      <div style="padding:12px; filter:brightness(0.65);">
+        <div class="subject-card">
+          <div class="subject-name">Raju Kumar</div>
+          <div class="subject-meta">Male · 34 yrs · Anuppur Block</div>
+        </div>
+        <div class="section-label">Form fills</div>
+        <div class="form-row">
+          <div class="form-row-info">
+            <div class="form-type">Lab Result</div>
+            <div class="form-date">05 Dec 2025</div>
+          </div>
+          <div class="share-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#607D8B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row-info">
+            <div class="form-type">Follow-up Visit</div>
+            <div class="form-date">22 Nov 2025</div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay">
+        <div class="share-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Share lab_result_05_12_2025.pdf via</div>
+          <div class="sheet-apps">
+            <div class="app-icon"><div class="icon-circle wa">💬</div><span>WhatsApp</span></div>
+            <div class="app-icon"><div class="icon-circle mail">✉</div><span>Gmail</span></div>
+            <div class="app-icon"><div class="icon-circle drive">△</div><span>Drive</span></div>
+            <div class="app-icon"><div class="icon-circle more">•••</div><span>More</span></div>
+          </div>
+          <div class="sheet-divider"></div>
+          <div class="sheet-actions">
+            <div class="sheet-action"><span class="act-icon">💾</span><span>Save to device</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Android share sheet</strong>
+    PDF filename shown in the sheet title. User shares via WhatsApp, Gmail, Drive, or any installed app.
+  </div>
+</div>
+
+<!-- STATE 3: PDF output -->
+<div class="col">
+  <div class="col-title">3 — PDF output<br>Portrait, table layout</div>
+  <div class="phone">
+    <div class="status-bar"><span>9:15</span><span>▲▲🔋</span></div>
+    <div class="toolbar" style="background:#E53935;">
+      <span class="icon">←</span>
+      <span class="title" style="font-size:13px;">lab_result_05_12_2025.pdf</span>
+      <span style="font-size:18px;">⋮</span>
+    </div>
+    <div class="pdf-viewer">
+      <div class="pdf-page">
+        <div class="pdf-topbar">📄 lab_result_05_12_2025.pdf &nbsp;·&nbsp; Page 1 of 1</div>
+        <div class="pdf-header">
+          <div class="pdf-header-title">Lab Result</div>
+          <div class="pdf-header-sub">Raju Kumar · 05 Dec 2025</div>
+        </div>
+        <div class="pdf-body">
+          <table class="pdf-table">
+            <thead>
+              <tr><th>Field</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Test type</td><td>Blood glucose</td></tr>
+              <tr><td>Result</td><td>126 mg/dL</td></tr>
+              <tr><td>Normal range</td><td>70–100 mg/dL</td></tr>
+              <tr><td>Status</td><td>High</td></tr>
+              <tr><td>Lab technician</td><td>Priya Sharma</td></tr>
+              <tr><td>Remarks</td><td>Follow up in 2 weeks</td></tr>
+              <tr><td>Next visit date</td><td>19 Dec 2025</td></tr>
+            </tbody>
+          </table>
+          <div class="pdf-watermark">Generated by Avni · Raju Kumar · 05-12-2025 09:14</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>PDF — table layout, portrait</strong>
+    Field label on the left, value on the right. Header shows form type, subject name, and date. Watermark at the bottom includes the logged-in user and timestamp.
+  </div>
+</div>
+
+</body>
+</html>

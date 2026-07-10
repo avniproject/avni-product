@@ -4,6 +4,7 @@ export default {
     "releases": [
         "16.15",
         "17.0",
+        "17.1",
         "18.0",
     ],
     "projects": [
